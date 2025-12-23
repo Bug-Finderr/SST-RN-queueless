@@ -1,0 +1,13 @@
+{
+  "name": "native-monorepo",
+  "private": true,
+  "scripts": {
+    "lint": "biome check --unsafe .",
+    "lint:fix": "biome check --unsafe --write .",
+    "prepare": "lefthook install"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.10",
+    "lefthook": "^1.11.13"
+  }
+}
