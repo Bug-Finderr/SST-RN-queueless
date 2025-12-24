@@ -2,12 +2,8 @@ import mongoose from "mongoose";
 
 import { config } from "../config";
 import { Service } from "../models/service";
-import {
-  getTodayStart,
-  type ITokenDocument,
-  Token,
-  type TokenStatus,
-} from "../models/token";
+import { getTodayStart, Token } from "../models/token";
+import type { ITokenDocument, QueueStatus, TokenStatus } from "../types";
 
 // Counter collection for atomic token numbering
 // This fixes the race condition in the Python version
@@ -93,19 +89,6 @@ export async function hasActiveToken(
 }
 
 // Get queue status for a service
-export interface QueueStatus {
-  serviceId: string;
-  currentToken: number | null;
-  beingServedTokenId: string | null;
-  waitingTokens: Array<{
-    id: string;
-    tokenNumber: number;
-    position: number;
-  }>;
-  totalWaiting: number;
-  totalServed: number;
-}
-
 export async function getQueueStatus(serviceId: string): Promise<QueueStatus> {
   const serviceObjectId = new mongoose.Types.ObjectId(serviceId);
 

@@ -1,12 +1,8 @@
 import mongoose from "mongoose";
 
-import {
-  type AuthenticatedUser,
-  requireAdmin,
-  requireAuth,
-} from "../middleware/auth";
+import { requireAdmin, requireAuth } from "../middleware/auth";
 import { Service } from "../models/service";
-import { type ITokenDocument, Token } from "../models/token";
+import { Token } from "../models/token";
 import {
   callNextToken,
   completeCurrentToken,
@@ -17,6 +13,7 @@ import {
   getQueueStatus,
   hasActiveToken,
 } from "../services/queue";
+import type { AuthenticatedUser, ITokenDocument } from "../types";
 import { badRequest, forbidden, notFound } from "../utils/response";
 import { objectIdSchema, validate } from "../utils/validation";
 

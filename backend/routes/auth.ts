@@ -1,11 +1,11 @@
 import {
-  type AuthenticatedUser,
   createToken,
   hashPassword,
   requireAuth,
   verifyPassword,
 } from "../middleware/auth";
 import { User } from "../models/user";
+import type { AuthenticatedUser } from "../types";
 import { badRequest, parseBody, unauthorized } from "../utils/response";
 import { loginSchema, registerSchema, validate } from "../utils/validation";
 

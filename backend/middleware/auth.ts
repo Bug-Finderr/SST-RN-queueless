@@ -1,21 +1,8 @@
 import jwt, { type SignOptions } from "jsonwebtoken";
 
 import { config } from "../config";
-import { type IUserDocument, User, type UserRole } from "../models/user";
-
-export interface JWTPayload {
-  userId: string;
-  role: UserRole;
-  iat: number;
-  exp: number;
-}
-
-export interface AuthenticatedUser {
-  id: string;
-  email: string;
-  name: string;
-  role: UserRole;
-}
+import { User } from "../models/user";
+import type { AuthenticatedUser, IUserDocument, JWTPayload } from "../types";
 
 // Create JWT token
 export function createToken(user: IUserDocument): string {

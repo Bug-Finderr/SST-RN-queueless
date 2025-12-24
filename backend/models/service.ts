@@ -1,16 +1,5 @@
-import mongoose, { type Document, type Model, Schema } from "mongoose";
-
-export interface IService {
-  name: string;
-  description: string;
-  avgServiceTimeMins: number;
-  isActive: boolean;
-  createdAt: Date;
-}
-
-export interface IServiceDocument extends IService, Document {
-  _id: mongoose.Types.ObjectId;
-}
+import mongoose, { type Model, Schema } from "mongoose";
+import type { IServiceDocument } from "../types";
 
 const serviceSchema = new Schema<IServiceDocument>(
   {

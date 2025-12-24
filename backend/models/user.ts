@@ -1,18 +1,5 @@
-import mongoose, { type Document, type Model, Schema } from "mongoose";
-
-export type UserRole = "user" | "admin";
-
-export interface IUser {
-  email: string;
-  name: string;
-  passwordHash: string;
-  role: UserRole;
-  createdAt: Date;
-}
-
-export interface IUserDocument extends IUser, Document {
-  _id: mongoose.Types.ObjectId;
-}
+import mongoose, { type Model, Schema } from "mongoose";
+import type { IUserDocument } from "../types";
 
 const userSchema = new Schema<IUserDocument>(
   {

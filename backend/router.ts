@@ -17,9 +17,9 @@ import {
   handleGetServiceTokens,
   handleSkipToken,
 } from "./routes/tokens";
+import type { Handler, Params } from "./types";
 
-type Params = { [key: string]: string };
-type Handler = (req: Request, p: Params) => Response | Promise<Response>;
+export type { Handler, Params } from "./types";
 
 // Declarative route table (exported for Express compatibility)
 export const routes: { method: string; path: string; handler: Handler }[] = [
