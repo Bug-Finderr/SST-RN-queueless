@@ -19,14 +19,21 @@ bun run start:express
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MONGO_URI` | (Atlas cluster) | MongoDB connection string |
-| `DB_NAME` | `queueless` | Database name |
-| `JWT_SECRET` | dev default | **Must set in production** |
-| `JWT_EXPIRES_IN` | `24h` | Token expiry |
-| `PORT` | `3000` | Server port |
-| `CORS_ORIGINS` | `localhost:3000,5173` | Comma-separated origins |
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `MONGO_URI` | Yes | MongoDB connection string |
+| `DB_NAME` | Yes | Database name |
+| `JWT_SECRET` | Yes | JWT signing secret |
+| `JWT_EXPIRES_IN` | No (24h) | Token expiry |
+| `PORT` | No (8000) | Server port |
+| `CORS_ORIGINS` | No | Comma-separated origins |
+
+**Generate a JWT secret:**
+```bash
+openssl rand -base64 32
+# or
+bun -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
 
 ## API Endpoints
 
