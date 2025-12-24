@@ -8,12 +8,8 @@ const server = Bun.serve({
   port: config.port,
   async fetch(request: Request): Promise<Response> {
     const start = Date.now();
-    const origin = request.headers.get("Origin");
     const cors = {
-      "Access-Control-Allow-Origin":
-        origin && config.corsOrigins.includes(origin)
-          ? origin
-          : (config.corsOrigins[0] ?? "*"),
+      "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
     };

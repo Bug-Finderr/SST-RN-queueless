@@ -26,7 +26,6 @@ bun run start:express
 | `JWT_SECRET` | Yes | JWT signing secret |
 | `JWT_EXPIRES_IN` | No (24h) | Token expiry |
 | `PORT` | No (8000) | Server port |
-| `CORS_ORIGINS` | No | Comma-separated origins |
 
 **Generate a JWT secret:**
 ```bash
@@ -130,7 +129,6 @@ export const routes: Route[] = [
 
 - JWT authentication with configurable expiry
 - Bcrypt password hashing via `Bun.password`
-- CORS whitelist (not `*`)
 - Input validation with Zod
 - Admin endpoints protected (unlike the Python version)
 - Atomic token numbering (no race conditions)
