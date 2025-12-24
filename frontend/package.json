@@ -1,7 +1,7 @@
 {
   "name": "queueless",
   "main": "expo-router/entry",
-  "version": "1.0.0",
+  "private": true,
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -38,6 +38,5 @@
   "devDependencies": {
     "@types/react": "~19.1.0",
     "typescript": "~5.9.2"
-  },
-  "private": true
+  }
 }

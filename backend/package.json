@@ -1,14 +1,24 @@
 {
-  "name": "backend",
+  "name": "queueless-backend",
   "module": "index.ts",
   "type": "module",
   "private": true,
   "scripts": {
     "dev": "bun run --hot index.ts",
-    "start": "bun index.ts"
+    "dev:express": "bun run --hot index.express.ts",
+    "start": "bun index.ts",
+    "start:express": "bun index.express.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.8.3",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.7"
   },
   "peerDependencies": {
     "typescript": "^5"
