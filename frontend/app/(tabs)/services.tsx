@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     alignItems: "center",
-    paddingTop: 80,
+    paddingTop: "66%",
     paddingHorizontal: 40,
   },
   emptyTitle: {

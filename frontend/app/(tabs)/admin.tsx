@@ -184,19 +184,18 @@ export default function AdminScreen() {
       </View>
 
       {services.length === 0 ? (
-        <View style={styles.emptyStateContainer}>
-          <Text style={styles.emptyStateText}>No services yet.</Text>
+        <View style={styles.emptyContainer}>
+          <Ionicons name="storefront-outline" size={64} color="#cbd5e1" />
+          <Text style={styles.emptyTitle}>No Services Yet</Text>
+          <Text style={styles.emptyText}>
+            Create your first service to start managing queues.
+          </Text>
           <TouchableOpacity
-            style={styles.emptyStateButton}
+            style={styles.createServiceButton}
             onPress={() => setShowCreateModal(true)}
           >
-            <Ionicons
-              name="add"
-              size={18}
-              color="#fff"
-              style={{ marginRight: 8 }}
-            />
-            <Text style={styles.emptyStateButtonText}>Create</Text>
+            <Ionicons name="add" size={20} color="#fff" />
+            <Text style={styles.createServiceButtonText}>Create Service</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -661,29 +660,36 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#fff",
   },
-  /* empty state (no services) */
-  emptyStateContainer: {
-    height: "80%",
-    justifyContent: "center",
+  emptyContainer: {
     alignItems: "center",
-    gap: 16,
+    paddingTop: "60%",
   },
-  emptyStateText: {
-    color: "#64748b",
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#475569",
+    marginTop: 16,
+  },
+  emptyText: {
+    fontSize: 15,
+    color: "#94a3b8",
     textAlign: "center",
-    fontSize: 16,
+    marginTop: 8,
+    maxWidth: 280,
   },
-  emptyStateButton: {
+  createServiceButton: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#6366f1",
-    paddingVertical: 10,
-    paddingHorizontal: 18,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
     borderRadius: 12,
+    marginTop: 24,
+    gap: 8,
   },
-  emptyStateButtonText: {
+  createServiceButtonText: {
     fontSize: 16,
-    fontWeight: "700",
+    fontWeight: "600",
     color: "#fff",
   },
 });

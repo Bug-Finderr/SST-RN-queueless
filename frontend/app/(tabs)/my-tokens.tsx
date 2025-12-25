@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     alignItems: "center",
-    paddingTop: 60,
+    paddingTop: "54%",
     paddingHorizontal: 40,
   },
   emptyTitle: {
