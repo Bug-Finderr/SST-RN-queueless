@@ -161,11 +161,6 @@ export default function AdminScreen() {
     ]);
   };
 
-  const handleSkipCurrentToken = () => {
-    if (!queueStatus?.beingServedTokenId || !queueStatus?.currentToken) return;
-    handleSkipToken(queueStatus.beingServedTokenId, queueStatus.currentToken);
-  };
-
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.header}>
@@ -255,37 +250,28 @@ export default function AdminScreen() {
                         : "None"}
                     </Text>
 
-                    {/* Action Buttons */}
-                    <View style={styles.actionButtonsRow}>
-                      {queueStatus.currentToken && (
-                        <>
-                          <Button
-                            label="Complete"
-                            icon="checkmark-circle"
-                            variant="success"
-                            onPress={handleCompleteToken}
-                          />
-                          <Button
-                            label="Skip"
-                            icon="close-circle"
-                            variant="danger"
-                            onPress={handleSkipCurrentToken}
-                          />
-                        </>
-                      )}
-                    </View>
-
-                    <TouchableOpacity
-                      style={styles.callNextButton}
-                      onPress={handleCallNext}
-                    >
-                      <Ionicons name="arrow-forward" size={20} color="#fff" />
-                      <Text style={styles.callNextText}>
-                        {queueStatus.currentToken
+                    <Button
+                      label={
+                        queueStatus.currentToken
                           ? "Complete & Call Next"
-                          : "Call Next"}
-                      </Text>
-                    </TouchableOpacity>
+                          : "Call Next"
+                      }
+                      icon="arrow-forward"
+                      variant="success"
+                      onPress={handleCallNext}
+                      style={{ marginBottom: 12 }}
+                      fullWidth
+                    />
+
+                    {queueStatus.currentToken && (
+                      <Button
+                        label="Complete"
+                        icon="checkmark-circle"
+                        variant="ghost"
+                        onPress={handleCompleteToken}
+                        fullWidth
+                      />
+                    )}
                   </View>
 
                   {/* Waiting Queue */}
@@ -483,25 +469,6 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#fff",
     marginBottom: 16,
-  },
-  actionButtonsRow: {
-    flexDirection: "row",
-    gap: 12,
-    marginBottom: 12,
-  },
-  callNextButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.2)",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    gap: 8,
-  },
-  callNextText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#fff",
   },
   emptyQueue: {
     alignItems: "center",

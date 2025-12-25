@@ -36,7 +36,7 @@ const variants: Record<Variant, { bg: string; text: string; border?: string }> =
     success: { bg: "#10b981", text: "#fff" },
     danger: { bg: "#ef4444", text: "#fff" },
     destructive: { bg: "#fef2f2", text: "#ef4444", border: "#fecaca" },
-    ghost: { bg: "transparent", text: "#6366f1" },
+    ghost: { bg: "rgba(255, 255, 255, 0.2)", text: "#fff" },
   };
 
 const sizes: Record<
