@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useAuthState } from "@/hooks/use-auth";
 
 export default function TabLayout() {

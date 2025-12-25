@@ -34,7 +34,7 @@ export default function AdminScreen() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [serviceName, setServiceName] = useState("");
   const [serviceDesc, setServiceDesc] = useState("");
-  const [avgTime, setAvgTime] = useState("5");
+  const [avgTime, setAvgTime] = useState("");
 
   // Mutations
   const { mutate: createService, isPending: isCreatingService } =
