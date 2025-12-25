@@ -35,7 +35,7 @@ export default function ServicesScreen() {
             onSuccess: (token) => {
               Alert.alert(
                 "Token Booked!",
-                `Your token number is #${token.token_number}\n\nPosition: ${token.position_in_queue}\nEstimated wait: ${token.estimated_wait_mins} minutes`,
+                `Your token number is #${token.tokenNumber}\n\nPosition: ${token.positionInQueue}\nEstimated wait: ${token.estimatedWaitMins} minutes`,
               );
             },
             onError: (err) => {
@@ -89,9 +89,9 @@ export default function ServicesScreen() {
               <ServiceCard
                 name={item.name}
                 description={item.description}
-                currentToken={item.current_token}
-                waitingCount={item.waiting_count}
-                estimatedWaitMins={item.estimated_wait_mins}
+                currentToken={item.currentToken}
+                waitingCount={item.waitingCount}
+                estimatedWaitMins={item.estimatedWaitMins}
                 onBook={() => handleBookToken(item.id, item.name)}
               />
               {bookingServiceId === item.id && (

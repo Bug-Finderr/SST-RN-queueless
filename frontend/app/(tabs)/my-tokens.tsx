@@ -139,16 +139,16 @@ export default function MyTokensScreen() {
           ListEmptyComponent={renderEmpty}
           renderItem={({ item }) => (
             <TokenCard
-              tokenNumber={item.token_number}
-              serviceName={item.service_name}
+              tokenNumber={item.tokenNumber}
+              serviceName={item.service.name}
               status={item.status}
-              positionInQueue={item.position_in_queue}
-              estimatedWaitMins={item.estimated_wait_mins}
-              createdAt={item.created_at}
+              positionInQueue={item.positionInQueue ?? 0}
+              estimatedWaitMins={item.estimatedWaitMins ?? 0}
+              createdAt={item.createdAt}
               notification={item.notification}
               onCancel={
                 item.status === "waiting" || item.status === "being_served"
-                  ? () => handleCancel(item.id, item.token_number)
+                  ? () => handleCancel(item.id, item.tokenNumber)
                   : undefined
               }
             />

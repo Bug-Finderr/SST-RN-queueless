@@ -87,7 +87,7 @@ export function useCreateService() {
     mutationFn: (data: {
       name: string;
       description: string;
-      avg_service_time_mins: number;
+      avgServiceTimeMins: number;
     }) => api.post("/api/services", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queueKeys.services });
@@ -102,8 +102,8 @@ export function useCallNextToken() {
     mutationFn: (serviceId: string) =>
       api.post<{
         message: string;
-        token_number?: number;
-        completed_previous?: boolean;
+        nextTokenNumber?: number;
+        completedPrevious?: boolean;
       }>(`/api/tokens/call-next/${serviceId}`),
     onSuccess: (_, serviceId) => {
       queryClient.invalidateQueries({ queryKey: queueKeys.services });
@@ -120,7 +120,7 @@ export function useCompleteToken() {
 
   return useMutation({
     mutationFn: (serviceId: string) =>
-      api.post<{ message: string; completed: boolean; token_number?: number }>(
+      api.post<{ message: string; completed: boolean; tokenNumber?: number }>(
         `/api/tokens/complete/${serviceId}`,
       ),
     onSuccess: (_, serviceId) => {

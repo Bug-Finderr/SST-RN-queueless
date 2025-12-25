@@ -57,7 +57,7 @@ export default function AdminScreen() {
       {
         name: serviceName.trim(),
         description: serviceDesc.trim(),
-        avg_service_time_mins: parseInt(avgTime, 10) || 5,
+        avgServiceTimeMins: parseInt(avgTime, 10) || 5,
       },
       {
         onSuccess: () => {
@@ -81,12 +81,12 @@ export default function AdminScreen() {
 
     callNextToken(selectedService, {
       onSuccess: (result) => {
-        if (result.token_number) {
+        if (result.nextTokenNumber) {
           Alert.alert(
             "Token Called",
-            `Now serving token #${result.token_number}`,
+            `Now serving token #${result.nextTokenNumber}`,
           );
-        } else if (result.completed_previous) {
+        } else if (result.completedPrevious) {
           Alert.alert(
             "Queue Complete",
             "Previous token completed. No more waiting tokens.",
@@ -104,11 +104,11 @@ export default function AdminScreen() {
   };
 
   const handleCompleteToken = () => {
-    if (!selectedService || !queueStatus?.current_token) return;
+    if (!selectedService || !queueStatus?.currentToken) return;
 
     Alert.alert(
       "Complete Token",
-      `Mark token #${queueStatus.current_token} as completed?`,
+      `Mark token #${queueStatus.currentToken} as completed?`,
       [
         { text: "Cancel", style: "cancel" },
         {
@@ -119,7 +119,7 @@ export default function AdminScreen() {
                 if (result.completed) {
                   Alert.alert(
                     "Success",
-                    `Token #${result.token_number} completed`,
+                    `Token #${result.tokenNumber} completed`,
                   );
                 } else {
                   Alert.alert("Info", "No token being served");
@@ -162,12 +162,8 @@ export default function AdminScreen() {
   };
 
   const handleSkipCurrentToken = () => {
-    if (!queueStatus?.being_served_token_id || !queueStatus?.current_token)
-      return;
-    handleSkipToken(
-      queueStatus.being_served_token_id,
-      queueStatus.current_token,
-    );
+    if (!queueStatus?.beingServedTokenId || !queueStatus?.currentToken) return;
+    handleSkipToken(queueStatus.beingServedTokenId, queueStatus.currentToken);
   };
 
   return (
@@ -236,7 +232,7 @@ export default function AdminScreen() {
                 </Text>
                 <View style={styles.chipBadge}>
                   <Text style={styles.chipBadgeText}>
-                    {service.waiting_count}
+                    {service.waitingCount}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -254,14 +250,14 @@ export default function AdminScreen() {
                   <View style={styles.currentTokenCard}>
                     <Text style={styles.currentTokenLabel}>Now Serving</Text>
                     <Text style={styles.currentTokenNumber}>
-                      {queueStatus.current_token
-                        ? `#${queueStatus.current_token}`
+                      {queueStatus.currentToken
+                        ? `#${queueStatus.currentToken}`
                         : "None"}
                     </Text>
 
                     {/* Action Buttons */}
                     <View style={styles.actionButtonsRow}>
-                      {queueStatus.current_token && (
+                      {queueStatus.currentToken && (
                         <>
                           <Button
                             label="Complete"
@@ -285,7 +281,7 @@ export default function AdminScreen() {
                     >
                       <Ionicons name="arrow-forward" size={20} color="#fff" />
                       <Text style={styles.callNextText}>
-                        {queueStatus.current_token
+                        {queueStatus.currentToken
                           ? "Complete & Call Next"
                           : "Call Next"}
                       </Text>
@@ -294,9 +290,9 @@ export default function AdminScreen() {
 
                   {/* Waiting Queue */}
                   <Text style={styles.sectionTitle}>
-                    Waiting Queue ({queueStatus.waiting_count})
+                    Waiting Queue ({queueStatus.totalWaiting})
                   </Text>
-                  {queueStatus.waiting_tokens.length === 0 ? (
+                  {queueStatus.waitingTokens.length === 0 ? (
                     <View style={styles.emptyQueue}>
                       <Ionicons
                         name="checkmark-circle"
@@ -306,22 +302,15 @@ export default function AdminScreen() {
                       <Text style={styles.emptyQueueText}>No one waiting</Text>
                     </View>
                   ) : (
-                    queueStatus.waiting_tokens.map((token, index) => (
+                    queueStatus.waitingTokens.map((token) => (
                       <View key={token.id} style={styles.queueItem}>
                         <View style={styles.queueItemLeft}>
-                          <Text style={styles.queuePosition}>{index + 1}</Text>
+                          <Text style={styles.queuePosition}>
+                            {token.position}
+                          </Text>
                           <View>
                             <Text style={styles.queueTokenNumber}>
-                              Token #{token.token_number}
-                            </Text>
-                            <Text style={styles.queueTime}>
-                              {new Date(token.created_at).toLocaleTimeString(
-                                [],
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                },
-                              )}
+                              Token #{token.tokenNumber}
                             </Text>
                           </View>
                         </View>
@@ -331,7 +320,7 @@ export default function AdminScreen() {
                           variant="destructive"
                           size="sm"
                           onPress={() =>
-                            handleSkipToken(token.id, token.token_number)
+                            handleSkipToken(token.id, token.tokenNumber)
                           }
                         />
                       </View>
@@ -553,10 +542,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: "#1e293b",
-  },
-  queueTime: {
-    fontSize: 13,
-    color: "#94a3b8",
   },
   selectPrompt: {
     alignItems: "center",
