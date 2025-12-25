@@ -13,7 +13,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button } from "@/components/Button";
+import { Button } from "@/components/ui/Button";
 import { useLogin } from "@/hooks/use-auth";
 import { ApiError } from "@/lib/api";
 

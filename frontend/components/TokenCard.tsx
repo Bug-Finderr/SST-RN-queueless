@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import type React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Button } from "./Button";
+import { Button } from "./ui/Button";
 
 type TokenStatus =
   | "waiting"
@@ -67,7 +66,7 @@ const formatLocalTime = (isoString: string): string => {
   return `${displayHours}:${displayMinutes} ${ampm}`;
 };
 
-export const TokenCard: React.FC<TokenCardProps> = ({
+export default function TokenCard({
   tokenNumber,
   serviceName,
   status,
@@ -76,7 +75,7 @@ export const TokenCard: React.FC<TokenCardProps> = ({
   createdAt,
   notification,
   onCancel,
-}) => {
+}: TokenCardProps) {
   const config = statusConfig[status];
   const canCancel = status === "waiting" || status === "being_served";
   const timeStr = formatLocalTime(createdAt);
@@ -153,7 +152,7 @@ export const TokenCard: React.FC<TokenCardProps> = ({
       )}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   card: {

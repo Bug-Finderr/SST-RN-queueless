@@ -12,8 +12,8 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { BottomSheet } from "@/components/BottomSheet";
-import { Button } from "@/components/Button";
+import { BottomSheet } from "@/components/ui/BottomSheet";
+import { Button } from "@/components/ui/Button";
 import {
   useCallNextToken,
   useCompleteToken,

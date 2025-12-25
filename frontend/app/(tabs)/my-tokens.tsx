@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TokenCard } from "@/components/TokenCard";
+import TokenCard from "@/components/TokenCard";
 import { useCancelToken, useMyTokens } from "@/hooks/use-queue";
 import { ApiError } from "@/lib/api";
 

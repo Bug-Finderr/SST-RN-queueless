@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button } from "@/components/Button";
+import { Button } from "@/components/ui/Button";
 import { useAuthState, useLogout } from "@/hooks/use-auth";
 
 const showToast = (message: string) => {

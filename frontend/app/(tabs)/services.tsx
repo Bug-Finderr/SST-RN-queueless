@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ServiceCard } from "@/components/ServiceCard";
+import ServiceCard from "@/components/ServiceCard";
 import { useBookToken, useServices } from "@/hooks/use-queue";
 import { ApiError } from "@/lib/api";
 

@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
-import { Button } from "./Button";
+import { Button } from "./ui/Button";
 
 interface ServiceCardProps {
   name: string;
@@ -11,7 +11,7 @@ interface ServiceCardProps {
   onBook: () => void;
 }
 
-export function ServiceCard({
+export default function ServiceCard({
   name,
   description,
   currentToken,
