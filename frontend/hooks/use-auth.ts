@@ -56,7 +56,7 @@ export function useLogout() {
     },
     onSuccess: () => {
       queryClient.setQueryData(authKeys.user, null);
-      queryClient.invalidateQueries();
+      queryClient.clear();
     },
   });
 }

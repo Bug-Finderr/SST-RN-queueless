@@ -40,9 +40,7 @@ export default function ProfileScreen() {
     ]);
   };
 
-  const handlePlaceholderPress = () => {
-    showToast("Just a placeholder button");
-  };
+  const handlePlaceholderPress = () => showToast("Just a placeholder button");
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
