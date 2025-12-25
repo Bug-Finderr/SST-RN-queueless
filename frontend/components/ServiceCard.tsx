@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { Button } from "./Button";
 
 interface ServiceCardProps {
   name: string;
@@ -44,9 +45,7 @@ export function ServiceCard({
         </View>
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={onBook}>
-        <Text style={styles.buttonText}>Book Token</Text>
-      </TouchableOpacity>
+      <Button label="Book Token" onPress={onBook} fullWidth />
     </View>
   );
 }
@@ -105,16 +104,5 @@ const styles = StyleSheet.create({
   statText: {
     fontSize: 13,
     color: "#64748b",
-  },
-  button: {
-    backgroundColor: "#6366f1",
-    borderRadius: 10,
-    paddingVertical: 12,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 15,
-    fontWeight: "600",
   },
 });

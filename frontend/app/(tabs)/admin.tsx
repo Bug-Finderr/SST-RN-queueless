@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BottomSheet } from "@/components/BottomSheet";
+import { Button } from "@/components/Button";
 import {
   useCallNextToken,
   useCompleteToken,
@@ -190,13 +191,12 @@ export default function AdminScreen() {
           <Text style={styles.emptyText}>
             Create your first service to start managing queues.
           </Text>
-          <TouchableOpacity
-            style={styles.createServiceButton}
+          <Button
+            label="Create Service"
+            icon="add"
             onPress={() => setShowCreateModal(true)}
-          >
-            <Ionicons name="add" size={20} color="#fff" />
-            <Text style={styles.createServiceButtonText}>Create Service</Text>
-          </TouchableOpacity>
+            style={{ marginTop: 24 }}
+          />
         </View>
       ) : (
         <ScrollView
@@ -263,30 +263,18 @@ export default function AdminScreen() {
                     <View style={styles.actionButtonsRow}>
                       {queueStatus.current_token && (
                         <>
-                          <TouchableOpacity
-                            style={styles.completeButton}
+                          <Button
+                            label="Complete"
+                            icon="checkmark-circle"
+                            variant="success"
                             onPress={handleCompleteToken}
-                          >
-                            <Ionicons
-                              name="checkmark-circle"
-                              size={20}
-                              color="#fff"
-                            />
-                            <Text style={styles.actionButtonText}>
-                              Complete
-                            </Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            style={styles.skipCurrentButton}
+                          />
+                          <Button
+                            label="Skip"
+                            icon="close-circle"
+                            variant="danger"
                             onPress={handleSkipCurrentToken}
-                          >
-                            <Ionicons
-                              name="close-circle"
-                              size={20}
-                              color="#fff"
-                            />
-                            <Text style={styles.actionButtonText}>Skip</Text>
-                          </TouchableOpacity>
+                          />
                         </>
                       )}
                     </View>
@@ -337,15 +325,15 @@ export default function AdminScreen() {
                             </Text>
                           </View>
                         </View>
-                        <TouchableOpacity
-                          style={styles.skipButton}
+                        <Button
+                          label="Skip"
+                          icon="close"
+                          variant="destructive"
+                          size="sm"
                           onPress={() =>
                             handleSkipToken(token.id, token.token_number)
                           }
-                        >
-                          <Ionicons name="close" size={16} color="#ef4444" />
-                          <Text style={styles.skipText}>Skip</Text>
-                        </TouchableOpacity>
+                        />
                       </View>
                     ))
                   )}
@@ -404,20 +392,14 @@ export default function AdminScreen() {
           />
         </View>
 
-        <TouchableOpacity
-          style={[
-            styles.createButton,
-            isCreatingService && styles.createButtonDisabled,
-          ]}
+        <Button
+          label="Create Service"
           onPress={handleCreateService}
-          disabled={isCreatingService}
-        >
-          {isCreatingService ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.createButtonText}>Create Service</Text>
-          )}
-        </TouchableOpacity>
+          loading={isCreatingService}
+          size="lg"
+          fullWidth
+          style={{ marginTop: 8 }}
+        />
       </BottomSheet>
     </SafeAreaView>
   );
@@ -518,29 +500,6 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 12,
   },
-  completeButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#10b981",
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    gap: 6,
-  },
-  skipCurrentButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#ef4444",
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    gap: 6,
-  },
-  actionButtonText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#fff",
-  },
   callNextButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -599,20 +558,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#94a3b8",
   },
-  skipButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    backgroundColor: "#fef2f2",
-    gap: 4,
-  },
-  skipText: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#ef4444",
-  },
   selectPrompt: {
     alignItems: "center",
     paddingTop: 60,
@@ -645,21 +590,6 @@ const styles = StyleSheet.create({
     height: 80,
     textAlignVertical: "top",
   },
-  createButton: {
-    backgroundColor: "#6366f1",
-    borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: "center",
-    marginTop: 8,
-  },
-  createButtonDisabled: {
-    opacity: 0.7,
-  },
-  createButtonText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#fff",
-  },
   emptyContainer: {
     alignItems: "center",
     paddingTop: "60%",
@@ -676,20 +606,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 8,
     maxWidth: 280,
-  },
-  createServiceButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#6366f1",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 12,
-    marginTop: 24,
-    gap: 8,
-  },
-  createServiceButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#fff",
   },
 });

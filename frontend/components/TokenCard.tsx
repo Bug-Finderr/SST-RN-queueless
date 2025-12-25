@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import type React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { Button } from "./Button";
 
 type TokenStatus =
   | "waiting"
@@ -141,14 +142,14 @@ export const TokenCard: React.FC<TokenCardProps> = ({
       )}
 
       {canCancel && onCancel && (
-        <TouchableOpacity
-          style={styles.cancelButton}
+        <Button
+          label="Cancel Token"
+          icon="close-outline"
+          variant="destructive"
           onPress={onCancel}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="close-outline" size={18} color="#ef4444" />
-          <Text style={styles.cancelText}>Cancel Token</Text>
-        </TouchableOpacity>
+          fullWidth
+          style={{ marginTop: 16 }}
+        />
       )}
     </View>
   );
@@ -259,22 +260,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: "#10b981",
-  },
-  cancelButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 16,
-    paddingVertical: 10,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#fecaca",
-    backgroundColor: "#fef2f2",
-    gap: 6,
-  },
-  cancelText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#ef4444",
   },
 });

@@ -2,7 +2,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -14,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Button } from "@/components/Button";
 import { useRegister } from "@/hooks/use-auth";
 import { ApiError } from "@/lib/api";
 
@@ -171,21 +171,14 @@ export default function RegisterScreen() {
               </View>
             </View>
 
-            <TouchableOpacity
-              style={[
-                styles.button,
-                isRegisterPending && styles.buttonDisabled,
-              ]}
+            <Button
+              label="Create Account"
               onPress={handleRegister}
-              disabled={isRegisterPending}
-              activeOpacity={0.8}
-            >
-              {isRegisterPending ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.buttonText}>Create Account</Text>
-              )}
-            </TouchableOpacity>
+              loading={isRegisterPending}
+              size="lg"
+              fullWidth
+              style={{ marginTop: 8 }}
+            />
 
             <View style={styles.footer}>
               <Text style={styles.footerText}>Already have an account? </Text>
@@ -265,22 +258,6 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: "#1e293b",
-  },
-  button: {
-    backgroundColor: "#6366f1",
-    borderRadius: 12,
-    height: 56,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 8,
-  },
-  buttonDisabled: {
-    opacity: 0.7,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "700",
   },
   footer: {
     flexDirection: "row",

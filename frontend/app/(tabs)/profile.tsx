@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Button } from "@/components/Button";
 import { useAuthState, useLogout } from "@/hooks/use-auth";
 
 const showToast = (message: string) => {
@@ -132,10 +133,14 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={20} color="#ef4444" />
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
+        <Button
+          label="Logout"
+          icon="log-out-outline"
+          variant="destructive"
+          onPress={handleLogout}
+          fullWidth
+          style={{ marginTop: 24 }}
+        />
 
         <Text style={styles.version}>QueueLess v1.0.0</Text>
       </View>
@@ -236,21 +241,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     color: "#1e293b",
-  },
-  logoutButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#fef2f2",
-    borderRadius: 12,
-    paddingVertical: 14,
-    marginTop: 24,
-    gap: 8,
-  },
-  logoutText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#ef4444",
   },
   version: {
     textAlign: "center",
