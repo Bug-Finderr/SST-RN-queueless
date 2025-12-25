@@ -32,3 +32,18 @@ export interface TokenNotification {
   message: string;
   is_turn_near: boolean;
 }
+
+export interface QueueStatus {
+  service_id: string;
+  service_name: string;
+  current_token: number | null;
+  being_served_token_id: string | null;
+  waiting_tokens: Array<{
+    id: string;
+    token_number: number;
+    status: string;
+    created_at: string;
+  }>;
+  waiting_count: number;
+  avg_service_time_mins: number;
+}

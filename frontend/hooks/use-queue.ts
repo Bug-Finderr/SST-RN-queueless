@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
-import type { Service, Token, TokenNotification } from "@/types";
+import type { QueueStatus, Service, Token, TokenNotification } from "@/types";
 import { useAuthState } from "./use-auth";
 
 // Query keys
@@ -8,6 +8,7 @@ export const queueKeys = {
   services: ["services"] as const,
   myTokens: ["tokens", "my"] as const,
   notifications: ["tokens", "notifications"] as const,
+  queueStatus: (serviceId: string) => ["queue", serviceId] as const,
 };
 
 // Queries
@@ -39,6 +40,16 @@ export function useNotifications() {
     queryFn: () => api.get<TokenNotification[]>("/api/tokens/notifications"),
     enabled: isAuthenticated,
     refetchInterval: 30000,
+  });
+}
+
+export function useQueueStatus(serviceId: string | null) {
+  const { isAuthenticated } = useAuthState();
+
+  return useQuery({
+    queryKey: queueKeys.queueStatus(serviceId ?? ""),
+    queryFn: () => api.get<QueueStatus>(`/api/tokens/queue/${serviceId}`),
+    enabled: isAuthenticated && !!serviceId,
   });
 }
 
@@ -94,9 +105,12 @@ export function useCallNextToken() {
         token_number?: number;
         completed_previous?: boolean;
       }>(`/api/tokens/call-next/${serviceId}`),
-    onSuccess: () => {
+    onSuccess: (_, serviceId) => {
       queryClient.invalidateQueries({ queryKey: queueKeys.services });
       queryClient.invalidateQueries({ queryKey: queueKeys.myTokens });
+      queryClient.invalidateQueries({
+        queryKey: queueKeys.queueStatus(serviceId),
+      });
     },
   });
 }
@@ -109,9 +123,12 @@ export function useCompleteToken() {
       api.post<{ message: string; completed: boolean; token_number?: number }>(
         `/api/tokens/complete/${serviceId}`,
       ),
-    onSuccess: () => {
+    onSuccess: (_, serviceId) => {
       queryClient.invalidateQueries({ queryKey: queueKeys.services });
       queryClient.invalidateQueries({ queryKey: queueKeys.myTokens });
+      queryClient.invalidateQueries({
+        queryKey: queueKeys.queueStatus(serviceId),
+      });
     },
   });
 }
@@ -124,6 +141,7 @@ export function useSkipToken() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queueKeys.services });
       queryClient.invalidateQueries({ queryKey: queueKeys.myTokens });
+      queryClient.invalidateQueries({ queryKey: ["queue"] }); // Invalidate all queue status queries
     },
   });
 }

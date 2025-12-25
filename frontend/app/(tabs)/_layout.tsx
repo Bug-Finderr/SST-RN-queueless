@@ -3,10 +3,13 @@ import { Tabs } from "expo-router";
 import { HapticTab } from "@/components/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
+import { useAuthState } from "@/hooks/use-auth";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { user } = useAuthState();
+  const isAdmin = user?.role === "admin";
 
   return (
     <Tabs
@@ -31,6 +34,16 @@ export default function TabLayout() {
           title: "My Tokens",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="ticket-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="admin"
+        options={{
+          title: "Admin",
+          href: isAdmin ? "/(tabs)/admin" : null,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="settings-outline" size={size} color={color} />
           ),
         }}
       />
