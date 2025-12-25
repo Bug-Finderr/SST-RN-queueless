@@ -16,6 +16,7 @@ export function useServices() {
   return useQuery({
     queryKey: queueKeys.services,
     queryFn: () => api.get<Service[]>("/api/services"),
+    refetchInterval: 10000, // Poll every 10s for live updates
   });
 }
 
