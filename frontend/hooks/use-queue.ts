@@ -27,6 +27,7 @@ export function useMyTokens() {
     queryKey: queueKeys.myTokens,
     queryFn: () => api.get<Token[]>("/api/tokens/my"),
     enabled: isAuthenticated,
+    refetchInterval: 10000, // Poll every 10s for live updates
   });
 }
 
