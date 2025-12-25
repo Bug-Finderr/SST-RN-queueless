@@ -1,9 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { Colors } from "@/constants/theme";
 import { useAuthState } from "@/hooks/use-auth";
-import { useColorScheme } from "@/hooks/use-color-scheme";
 
 export default function TabLayout() {
   const { user } = useAuthState();
