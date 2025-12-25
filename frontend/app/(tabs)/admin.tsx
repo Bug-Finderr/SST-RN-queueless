@@ -3,7 +3,6 @@ import { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
-  Modal,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -13,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { BottomSheet } from "@/components/BottomSheet";
 import {
   useCallNextToken,
   useCompleteToken,
@@ -173,235 +173,253 @@ export default function AdminScreen() {
     <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.header}>
         <Text style={styles.title}>Admin Panel</Text>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => setShowCreateModal(true)}
-        >
-          <Ionicons name="add" size={24} color="#fff" />
-        </TouchableOpacity>
+        {services.length > 0 && (
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => setShowCreateModal(true)}
+          >
+            <Ionicons name="add" size={24} color="#fff" />
+          </TouchableOpacity>
+        )}
       </View>
 
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefetching}
-            onRefresh={refetch}
-            colors={["#6366f1"]}
-          />
-        }
-        contentContainerStyle={styles.content}
-      >
-        {/* Service Selection */}
-        <Text style={styles.sectionTitle}>Select Service</Text>
+      {services.length === 0 ? (
+        <View style={styles.emptyStateContainer}>
+          <Text style={styles.emptyStateText}>No services yet.</Text>
+          <TouchableOpacity
+            style={styles.emptyStateButton}
+            onPress={() => setShowCreateModal(true)}
+          >
+            <Ionicons
+              name="add"
+              size={18}
+              color="#fff"
+              style={{ marginRight: 8 }}
+            />
+            <Text style={styles.emptyStateButtonText}>Create</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
         <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.serviceScroll}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefetching}
+              onRefresh={refetch}
+              colors={["#6366f1"]}
+            />
+          }
+          contentContainerStyle={styles.content}
         >
-          {services.map((service) => (
-            <TouchableOpacity
-              key={service.id}
-              style={[
-                styles.serviceChip,
-                selectedService === service.id && styles.serviceChipActive,
-              ]}
-              onPress={() => handleSelectService(service.id)}
-            >
-              <Text
+          {/* Service Selection */}
+          <Text style={styles.sectionTitle}>Select Service</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.serviceScroll}
+          >
+            {services.map((service) => (
+              <TouchableOpacity
+                key={service.id}
                 style={[
-                  styles.serviceChipText,
-                  selectedService === service.id &&
-                    styles.serviceChipTextActive,
+                  styles.serviceChip,
+                  selectedService === service.id && styles.serviceChipActive,
                 ]}
+                onPress={() => handleSelectService(service.id)}
               >
-                {service.name}
-              </Text>
-              <View style={styles.chipBadge}>
-                <Text style={styles.chipBadgeText}>
-                  {service.waiting_count}
+                <Text
+                  style={[
+                    styles.serviceChipText,
+                    selectedService === service.id &&
+                      styles.serviceChipTextActive,
+                  ]}
+                >
+                  {service.name}
                 </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-
-        {/* Queue Management */}
-        {selectedService && (
-          <View style={styles.queueSection}>
-            {isLoadingQueue ? (
-              <ActivityIndicator size="large" color="#6366f1" />
-            ) : queueStatus ? (
-              <>
-                {/* Current Token */}
-                <View style={styles.currentTokenCard}>
-                  <Text style={styles.currentTokenLabel}>Now Serving</Text>
-                  <Text style={styles.currentTokenNumber}>
-                    {queueStatus.current_token
-                      ? `#${queueStatus.current_token}`
-                      : "None"}
+                <View style={styles.chipBadge}>
+                  <Text style={styles.chipBadgeText}>
+                    {service.waiting_count}
                   </Text>
-
-                  {/* Action Buttons */}
-                  <View style={styles.actionButtonsRow}>
-                    {queueStatus.current_token && (
-                      <>
-                        <TouchableOpacity
-                          style={styles.completeButton}
-                          onPress={handleCompleteToken}
-                        >
-                          <Ionicons
-                            name="checkmark-circle"
-                            size={20}
-                            color="#fff"
-                          />
-                          <Text style={styles.actionButtonText}>Complete</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={styles.skipCurrentButton}
-                          onPress={handleSkipCurrentToken}
-                        >
-                          <Ionicons
-                            name="close-circle"
-                            size={20}
-                            color="#fff"
-                          />
-                          <Text style={styles.actionButtonText}>Skip</Text>
-                        </TouchableOpacity>
-                      </>
-                    )}
-                  </View>
-
-                  <TouchableOpacity
-                    style={styles.callNextButton}
-                    onPress={handleCallNext}
-                  >
-                    <Ionicons name="arrow-forward" size={20} color="#fff" />
-                    <Text style={styles.callNextText}>
-                      {queueStatus.current_token
-                        ? "Complete & Call Next"
-                        : "Call Next"}
-                    </Text>
-                  </TouchableOpacity>
                 </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
 
-                {/* Waiting Queue */}
-                <Text style={styles.sectionTitle}>
-                  Waiting Queue ({queueStatus.waiting_count})
-                </Text>
-                {queueStatus.waiting_tokens.length === 0 ? (
-                  <View style={styles.emptyQueue}>
-                    <Ionicons
-                      name="checkmark-circle"
-                      size={48}
-                      color="#10b981"
-                    />
-                    <Text style={styles.emptyQueueText}>No one waiting</Text>
-                  </View>
-                ) : (
-                  queueStatus.waiting_tokens.map((token, index) => (
-                    <View key={token.id} style={styles.queueItem}>
-                      <View style={styles.queueItemLeft}>
-                        <Text style={styles.queuePosition}>{index + 1}</Text>
-                        <View>
-                          <Text style={styles.queueTokenNumber}>
-                            Token #{token.token_number}
-                          </Text>
-                          <Text style={styles.queueTime}>
-                            {new Date(token.created_at).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </Text>
-                        </View>
-                      </View>
-                      <TouchableOpacity
-                        style={styles.skipButton}
-                        onPress={() =>
-                          handleSkipToken(token.id, token.token_number)
-                        }
-                      >
-                        <Ionicons name="close" size={16} color="#ef4444" />
-                        <Text style={styles.skipText}>Skip</Text>
-                      </TouchableOpacity>
+          {/* Queue Management */}
+          {selectedService && (
+            <View style={styles.queueSection}>
+              {isLoadingQueue ? (
+                <ActivityIndicator size="large" color="#6366f1" />
+              ) : queueStatus ? (
+                <>
+                  {/* Current Token */}
+                  <View style={styles.currentTokenCard}>
+                    <Text style={styles.currentTokenLabel}>Now Serving</Text>
+                    <Text style={styles.currentTokenNumber}>
+                      {queueStatus.current_token
+                        ? `#${queueStatus.current_token}`
+                        : "None"}
+                    </Text>
+
+                    {/* Action Buttons */}
+                    <View style={styles.actionButtonsRow}>
+                      {queueStatus.current_token && (
+                        <>
+                          <TouchableOpacity
+                            style={styles.completeButton}
+                            onPress={handleCompleteToken}
+                          >
+                            <Ionicons
+                              name="checkmark-circle"
+                              size={20}
+                              color="#fff"
+                            />
+                            <Text style={styles.actionButtonText}>
+                              Complete
+                            </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={styles.skipCurrentButton}
+                            onPress={handleSkipCurrentToken}
+                          >
+                            <Ionicons
+                              name="close-circle"
+                              size={20}
+                              color="#fff"
+                            />
+                            <Text style={styles.actionButtonText}>Skip</Text>
+                          </TouchableOpacity>
+                        </>
+                      )}
                     </View>
-                  ))
-                )}
-              </>
-            ) : null}
-          </View>
-        )}
 
-        {!selectedService && (
-          <View style={styles.selectPrompt}>
-            <Ionicons name="arrow-up" size={32} color="#94a3b8" />
-            <Text style={styles.selectPromptText}>
-              Select a service to manage its queue
-            </Text>
-          </View>
-        )}
-      </ScrollView>
+                    <TouchableOpacity
+                      style={styles.callNextButton}
+                      onPress={handleCallNext}
+                    >
+                      <Ionicons name="arrow-forward" size={20} color="#fff" />
+                      <Text style={styles.callNextText}>
+                        {queueStatus.current_token
+                          ? "Complete & Call Next"
+                          : "Call Next"}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* Waiting Queue */}
+                  <Text style={styles.sectionTitle}>
+                    Waiting Queue ({queueStatus.waiting_count})
+                  </Text>
+                  {queueStatus.waiting_tokens.length === 0 ? (
+                    <View style={styles.emptyQueue}>
+                      <Ionicons
+                        name="checkmark-circle"
+                        size={48}
+                        color="#10b981"
+                      />
+                      <Text style={styles.emptyQueueText}>No one waiting</Text>
+                    </View>
+                  ) : (
+                    queueStatus.waiting_tokens.map((token, index) => (
+                      <View key={token.id} style={styles.queueItem}>
+                        <View style={styles.queueItemLeft}>
+                          <Text style={styles.queuePosition}>{index + 1}</Text>
+                          <View>
+                            <Text style={styles.queueTokenNumber}>
+                              Token #{token.token_number}
+                            </Text>
+                            <Text style={styles.queueTime}>
+                              {new Date(token.created_at).toLocaleTimeString(
+                                [],
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                },
+                              )}
+                            </Text>
+                          </View>
+                        </View>
+                        <TouchableOpacity
+                          style={styles.skipButton}
+                          onPress={() =>
+                            handleSkipToken(token.id, token.token_number)
+                          }
+                        >
+                          <Ionicons name="close" size={16} color="#ef4444" />
+                          <Text style={styles.skipText}>Skip</Text>
+                        </TouchableOpacity>
+                      </View>
+                    ))
+                  )}
+                </>
+              ) : null}
+            </View>
+          )}
+
+          {!selectedService && (
+            <View style={styles.selectPrompt}>
+              <Ionicons name="arrow-up" size={32} color="#94a3b8" />
+              <Text style={styles.selectPromptText}>
+                Select a service to manage its queue
+              </Text>
+            </View>
+          )}
+        </ScrollView>
+      )}
 
       {/* Create Service Modal */}
-      <Modal visible={showCreateModal} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Create Service</Text>
-              <TouchableOpacity onPress={() => setShowCreateModal(false)}>
-                <Ionicons name="close" size={24} color="#64748b" />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Service Name</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="e.g., General Consultation"
-                value={serviceName}
-                onChangeText={setServiceName}
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Description</Text>
-              <TextInput
-                style={[styles.input, styles.textArea]}
-                placeholder="Describe this service"
-                value={serviceDesc}
-                onChangeText={setServiceDesc}
-                multiline
-                numberOfLines={3}
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Average Service Time (minutes)</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="5"
-                value={avgTime}
-                onChangeText={setAvgTime}
-                keyboardType="number-pad"
-              />
-            </View>
-
-            <TouchableOpacity
-              style={[
-                styles.createButton,
-                isCreatingService && styles.createButtonDisabled,
-              ]}
-              onPress={handleCreateService}
-              disabled={isCreatingService}
-            >
-              {isCreatingService ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.createButtonText}>Create Service</Text>
-              )}
-            </TouchableOpacity>
-          </View>
+      <BottomSheet
+        visible={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        title="Create Service"
+      >
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Service Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="e.g., General Consultation"
+            value={serviceName}
+            onChangeText={setServiceName}
+          />
         </View>
-      </Modal>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Description</Text>
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            placeholder="Describe this service"
+            value={serviceDesc}
+            onChangeText={setServiceDesc}
+            multiline
+            numberOfLines={3}
+          />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Average Service Time (minutes)</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="5"
+            value={avgTime}
+            onChangeText={setAvgTime}
+            keyboardType="number-pad"
+          />
+        </View>
+
+        <TouchableOpacity
+          style={[
+            styles.createButton,
+            isCreatingService && styles.createButtonDisabled,
+          ]}
+          onPress={handleCreateService}
+          disabled={isCreatingService}
+        >
+          {isCreatingService ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.createButtonText}>Create Service</Text>
+          )}
+        </TouchableOpacity>
+      </BottomSheet>
     </SafeAreaView>
   );
 }
@@ -605,29 +623,6 @@ const styles = StyleSheet.create({
     color: "#94a3b8",
     marginTop: 12,
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "flex-end",
-  },
-  modalContent: {
-    backgroundColor: "#fff",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 24,
-    paddingBottom: 40,
-  },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 24,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#1e293b",
-  },
   inputGroup: {
     marginBottom: 16,
   },
@@ -662,6 +657,31 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   createButtonText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#fff",
+  },
+  /* empty state (no services) */
+  emptyStateContainer: {
+    height: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 16,
+  },
+  emptyStateText: {
+    color: "#64748b",
+    textAlign: "center",
+    fontSize: 16,
+  },
+  emptyStateButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#6366f1",
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 12,
+  },
+  emptyStateButtonText: {
     fontSize: 16,
     fontWeight: "700",
     color: "#fff",
