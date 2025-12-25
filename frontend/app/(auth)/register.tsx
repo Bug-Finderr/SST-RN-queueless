@@ -67,19 +67,15 @@ export default function RegisterScreen() {
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <Ionicons name="arrow-back" size={24} color="#1e293b" />
-          </TouchableOpacity>
-
           <View style={styles.header}>
+            <View style={styles.logoContainer}>
+              <Ionicons name="person-add" size={40} color="#6366f1" />
+            </View>
             <Text style={styles.title}>Create Account</Text>
             <Text style={styles.subtitle}>Join QueueLess and save time</Text>
           </View>
 
-          <View style={styles.form}>
+          <View>
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Full Name</Text>
               <View style={styles.inputWrapper}>
@@ -206,34 +202,34 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: 24,
-    paddingTop: 16,
+    paddingTop: 32,
     paddingBottom: 24,
   },
-  backButton: {
-    width: 44,
-    height: 44,
+  header: {
+    alignItems: "center",
+    marginBottom: 32,
+  },
+  logoContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 20,
+    backgroundColor: "#eef2ff",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 16,
-  },
-  header: {
-    marginBottom: 32,
   },
   title: {
     fontSize: 28,
     fontWeight: "800",
     color: "#1e293b",
-    marginBottom: 8,
+    marginBottom: 6,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 15,
     color: "#64748b",
   },
-  form: {
-    flex: 1,
-  },
   inputGroup: {
-    marginBottom: 20,
+    marginBottom: 16,
   },
   label: {
     fontSize: 14,
