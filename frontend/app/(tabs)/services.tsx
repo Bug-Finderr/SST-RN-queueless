@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
   Alert,
@@ -10,9 +9,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ServiceCard from "@/components/ServiceCard";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Loader } from "@/components/ui/Loader";
 import { useBookToken, useServices } from "@/hooks/useQueue";
-import { ApiError } from "@/lib/api";
+import { showError } from "@/lib/error";
+import { colors } from "@/lib/theme";
 
 export default function ServicesScreen() {
   const [bookingServiceId, setBookingServiceId] = useState<string | null>(null);
@@ -39,11 +40,7 @@ export default function ServicesScreen() {
                 `Your token number is #${token.tokenNumber}\n\nPosition: ${token.positionInQueue}\nEstimated wait: ${token.estimatedWaitMins} minutes`,
               );
             },
-            onError: (err) => {
-              const message =
-                err instanceof ApiError ? err.message : "Failed to book token";
-              Alert.alert("Error", message);
-            },
+            onError: (err) => showError(err, "Failed to book token"),
             onSettled: () => setBookingServiceId(null),
           });
         },
@@ -52,13 +49,11 @@ export default function ServicesScreen() {
   };
 
   const renderEmpty = () => (
-    <View style={styles.emptyContainer}>
-      <Ionicons name="storefront-outline" size={64} color="#cbd5e1" />
-      <Text style={styles.emptyTitle}>No Services Available</Text>
-      <Text style={styles.emptyText}>
-        There are no services available at the moment. Please check back later.
-      </Text>
-    </View>
+    <EmptyState
+      icon="storefront-outline"
+      title="No Services Available"
+      description="There are no services available at the moment. Please check back later."
+    />
   );
 
   return (
@@ -79,7 +74,7 @@ export default function ServicesScreen() {
             <RefreshControl
               refreshing={isRefetchingServices}
               onRefresh={refetchServices}
-              colors={["#6366f1"]}
+              colors={[colors.primary]}
             />
           }
           ListEmptyComponent={renderEmpty}
@@ -109,7 +104,7 @@ export default function ServicesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8fafc",
+    backgroundColor: colors.background,
   },
   header: {
     paddingHorizontal: 20,
@@ -119,34 +114,16 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "800",
-    color: "#1e293b",
+    color: colors.text,
   },
   subtitle: {
     fontSize: 15,
-    color: "#64748b",
+    color: colors.textSecondary,
     marginTop: 4,
   },
   list: {
     paddingHorizontal: 20,
     paddingBottom: 20,
-  },
-  emptyContainer: {
-    alignItems: "center",
-    paddingTop: "66%",
-    paddingHorizontal: 40,
-  },
-  emptyTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#475569",
-    marginTop: 16,
-  },
-  emptyText: {
-    fontSize: 15,
-    color: "#94a3b8",
-    textAlign: "center",
-    marginTop: 8,
-    lineHeight: 22,
   },
   bookingOverlay: {
     position: "absolute",

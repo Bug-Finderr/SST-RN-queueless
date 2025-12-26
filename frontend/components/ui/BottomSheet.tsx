@@ -14,6 +14,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { colors } from "@/lib/theme";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const DURATION = 300;
@@ -80,7 +81,7 @@ export function BottomSheet({
             <Text style={styles.title}>{title}</Text>
             <TouchableWithoutFeedback onPress={onClose}>
               <View style={styles.closeButton}>
-                <Ionicons name="close" size={24} color="#64748b" />
+                <Ionicons name="close" size={24} color={colors.textSecondary} />
               </View>
             </TouchableWithoutFeedback>
           </View>
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
   },
   content: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.card,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: 24,
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#1e293b",
+    color: colors.text,
   },
   closeButton: {
     padding: 4,

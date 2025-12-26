@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@/components/ui/Button";
 import { useAuthState, useLogout } from "@/hooks/useAuth";
+import { colors } from "@/lib/theme";
 
 const showToast = (message: string) => {
   if (Platform.OS === "android") {
@@ -59,7 +60,11 @@ export default function ProfileScreen() {
           <Text style={styles.userEmail}>{user?.email}</Text>
           {user?.role === "admin" && (
             <View style={styles.adminBadge}>
-              <Ionicons name="shield-checkmark" size={14} color="#6366f1" />
+              <Ionicons
+                name="shield-checkmark"
+                size={14}
+                color={colors.primary}
+              />
               <Text style={styles.adminText}>Admin</Text>
             </View>
           )}
@@ -71,12 +76,25 @@ export default function ProfileScreen() {
             onPress={handlePlaceholderPress}
           >
             <View style={styles.menuItemLeft}>
-              <View style={[styles.menuIcon, { backgroundColor: "#eef2ff" }]}>
-                <Ionicons name="person-outline" size={20} color="#6366f1" />
+              <View
+                style={[
+                  styles.menuIcon,
+                  { backgroundColor: colors.primaryLight },
+                ]}
+              >
+                <Ionicons
+                  name="person-outline"
+                  size={20}
+                  color={colors.primary}
+                />
               </View>
               <Text style={styles.menuText}>Edit Profile</Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#94a3b8" />
+            <Ionicons
+              name="chevron-forward"
+              size={20}
+              color={colors.textMuted}
+            />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -84,16 +102,25 @@ export default function ProfileScreen() {
             onPress={handlePlaceholderPress}
           >
             <View style={styles.menuItemLeft}>
-              <View style={[styles.menuIcon, { backgroundColor: "#fef3c7" }]}>
+              <View
+                style={[
+                  styles.menuIcon,
+                  { backgroundColor: colors.warningLight },
+                ]}
+              >
                 <Ionicons
                   name="notifications-outline"
                   size={20}
-                  color="#f59e0b"
+                  color={colors.warning}
                 />
               </View>
               <Text style={styles.menuText}>Notifications</Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#94a3b8" />
+            <Ionicons
+              name="chevron-forward"
+              size={20}
+              color={colors.textMuted}
+            />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -101,16 +128,25 @@ export default function ProfileScreen() {
             onPress={handlePlaceholderPress}
           >
             <View style={styles.menuItemLeft}>
-              <View style={[styles.menuIcon, { backgroundColor: "#d1fae5" }]}>
+              <View
+                style={[
+                  styles.menuIcon,
+                  { backgroundColor: colors.successLight },
+                ]}
+              >
                 <Ionicons
                   name="help-circle-outline"
                   size={20}
-                  color="#10b981"
+                  color={colors.success}
                 />
               </View>
               <Text style={styles.menuText}>Help & Support</Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#94a3b8" />
+            <Ionicons
+              name="chevron-forward"
+              size={20}
+              color={colors.textMuted}
+            />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -118,16 +154,25 @@ export default function ProfileScreen() {
             onPress={handlePlaceholderPress}
           >
             <View style={styles.menuItemLeft}>
-              <View style={[styles.menuIcon, { backgroundColor: "#f1f5f9" }]}>
+              <View
+                style={[
+                  styles.menuIcon,
+                  { backgroundColor: colors.backgroundAlt },
+                ]}
+              >
                 <Ionicons
                   name="information-circle-outline"
                   size={20}
-                  color="#64748b"
+                  color={colors.textSecondary}
                 />
               </View>
               <Text style={styles.menuText}>About</Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#94a3b8" />
+            <Ionicons
+              name="chevron-forward"
+              size={20}
+              color={colors.textMuted}
+            />
           </TouchableOpacity>
         </View>
 
@@ -149,7 +194,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8fafc",
+    backgroundColor: colors.background,
   },
   header: {
     paddingHorizontal: 20,
@@ -159,7 +204,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "800",
-    color: "#1e293b",
+    color: colors.text,
   },
   content: {
     flex: 1,
@@ -173,7 +218,7 @@ const styles = StyleSheet.create({
     width: 88,
     height: 88,
     borderRadius: 44,
-    backgroundColor: "#6366f1",
+    backgroundColor: colors.primary,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 16,
@@ -181,22 +226,22 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 36,
     fontWeight: "700",
-    color: "#fff",
+    color: colors.white,
   },
   userName: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#1e293b",
+    color: colors.text,
     marginBottom: 4,
   },
   userEmail: {
     fontSize: 15,
-    color: "#64748b",
+    color: colors.textSecondary,
   },
   adminBadge: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#eef2ff",
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
@@ -206,10 +251,10 @@ const styles = StyleSheet.create({
   adminText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#6366f1",
+    color: colors.primary,
   },
   menuSection: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.card,
     borderRadius: 16,
     overflow: "hidden",
     marginTop: 8,
@@ -221,7 +266,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#f1f5f9",
+    borderBottomColor: colors.backgroundAlt,
   },
   menuItemLeft: {
     flexDirection: "row",
@@ -238,12 +283,12 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: 16,
     fontWeight: "500",
-    color: "#1e293b",
+    color: colors.text,
   },
   version: {
     textAlign: "center",
     fontSize: 13,
-    color: "#94a3b8",
+    color: colors.textMuted,
     marginTop: 24,
   },
 });

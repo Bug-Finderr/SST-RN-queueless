@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
+import { colors } from "@/lib/theme";
 import { Button } from "./ui/Button";
 
 type TokenStatus =
@@ -25,32 +26,32 @@ const statusConfig: Record<
   { color: string; bgColor: string; icon: string; label: string }
 > = {
   waiting: {
-    color: "#f59e0b",
-    bgColor: "#fef3c7",
+    color: colors.warning,
+    bgColor: colors.warningLight,
     icon: "time-outline",
     label: "Waiting",
   },
   being_served: {
-    color: "#10b981",
-    bgColor: "#d1fae5",
+    color: colors.success,
+    bgColor: colors.successLight,
     icon: "person-outline",
     label: "Being Served",
   },
   completed: {
-    color: "#6b7280",
-    bgColor: "#f3f4f6",
+    color: colors.gray,
+    bgColor: colors.grayLight,
     icon: "checkmark-circle-outline",
     label: "Completed",
   },
   skipped: {
-    color: "#ef4444",
-    bgColor: "#fee2e2",
+    color: colors.danger,
+    bgColor: colors.dangerLight,
     icon: "close-circle-outline",
     label: "Skipped",
   },
   canceled: {
-    color: "#6b7280",
-    bgColor: "#f3f4f6",
+    color: colors.gray,
+    bgColor: colors.grayLight,
     icon: "ban-outline",
     label: "Canceled",
   },
@@ -116,13 +117,21 @@ export default function TokenCard({
       {status === "waiting" && (
         <View style={styles.queueInfo}>
           <View style={styles.queueItem}>
-            <Ionicons name="people-outline" size={18} color="#64748b" />
+            <Ionicons
+              name="people-outline"
+              size={18}
+              color={colors.textSecondary}
+            />
             <Text style={styles.queueText}>
               Position: <Text style={styles.queueValue}>{positionInQueue}</Text>
             </Text>
           </View>
           <View style={styles.queueItem}>
-            <Ionicons name="hourglass-outline" size={18} color="#64748b" />
+            <Ionicons
+              name="hourglass-outline"
+              size={18}
+              color={colors.textSecondary}
+            />
             <Text style={styles.queueText}>
               Est. Wait:{" "}
               <Text style={styles.queueValue}>{estimatedWaitMins} min</Text>
@@ -133,7 +142,7 @@ export default function TokenCard({
 
       {status === "being_served" && (
         <View style={styles.servingBanner}>
-          <Ionicons name="megaphone-outline" size={20} color="#10b981" />
+          <Ionicons name="megaphone-outline" size={20} color={colors.success} />
           <Text style={styles.servingText}>
             It's your turn! Please proceed.
           </Text>
@@ -156,7 +165,7 @@ export default function TokenCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
@@ -170,7 +179,7 @@ const styles = StyleSheet.create({
   turnNearBanner: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f59e0b",
+    backgroundColor: colors.warning,
     marginHorizontal: -16,
     marginTop: -16,
     marginBottom: 16,
@@ -180,7 +189,7 @@ const styles = StyleSheet.create({
   turnNearText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#fff",
+    color: colors.white,
   },
   header: {
     flexDirection: "row",
@@ -190,7 +199,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 14,
-    backgroundColor: "#6366f1",
+    backgroundColor: colors.primary,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 12,
@@ -198,7 +207,7 @@ const styles = StyleSheet.create({
   tokenNumber: {
     fontSize: 18,
     fontWeight: "800",
-    color: "#fff",
+    color: colors.white,
   },
   headerInfo: {
     flex: 1,
@@ -206,12 +215,12 @@ const styles = StyleSheet.create({
   serviceName: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1e293b",
+    color: colors.text,
     marginBottom: 2,
   },
   timeText: {
     fontSize: 13,
-    color: "#94a3b8",
+    color: colors.textMuted,
   },
   statusBadge: {
     flexDirection: "row",
@@ -228,7 +237,7 @@ const styles = StyleSheet.create({
   queueInfo: {
     flexDirection: "row",
     marginTop: 16,
-    backgroundColor: "#f8fafc",
+    backgroundColor: colors.background,
     borderRadius: 10,
     padding: 12,
     gap: 24,
@@ -240,16 +249,16 @@ const styles = StyleSheet.create({
   },
   queueText: {
     fontSize: 14,
-    color: "#64748b",
+    color: colors.textSecondary,
   },
   queueValue: {
     fontWeight: "700",
-    color: "#1e293b",
+    color: colors.text,
   },
   servingBanner: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#d1fae5",
+    backgroundColor: colors.successLight,
     borderRadius: 10,
     padding: 12,
     marginTop: 16,
@@ -258,6 +267,6 @@ const styles = StyleSheet.create({
   servingText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#10b981",
+    color: colors.success,
   },
 });

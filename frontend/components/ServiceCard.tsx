@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
+import { colors } from "@/lib/theme";
 import { Button } from "./ui/Button";
 
 interface ServiceCardProps {
@@ -36,11 +37,19 @@ export default function ServiceCard({
 
       <View style={styles.stats}>
         <View style={styles.stat}>
-          <Ionicons name="people-outline" size={16} color="#64748b" />
+          <Ionicons
+            name="people-outline"
+            size={16}
+            color={colors.textSecondary}
+          />
           <Text style={styles.statText}>{waitingCount} waiting</Text>
         </View>
         <View style={styles.stat}>
-          <Ionicons name="time-outline" size={16} color="#64748b" />
+          <Ionicons
+            name="time-outline"
+            size={16}
+            color={colors.textSecondary}
+          />
           <Text style={styles.statText}>~{estimatedWaitMins} min</Text>
         </View>
       </View>
@@ -52,7 +61,7 @@ export default function ServiceCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.card,
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
@@ -71,11 +80,11 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#1e293b",
+    color: colors.text,
     flex: 1,
   },
   badge: {
-    backgroundColor: "#eef2ff",
+    backgroundColor: colors.primaryLight,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
@@ -83,11 +92,11 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#6366f1",
+    color: colors.primary,
   },
   description: {
     fontSize: 14,
-    color: "#64748b",
+    color: colors.textSecondary,
     marginBottom: 12,
     lineHeight: 20,
   },
@@ -103,6 +112,6 @@ const styles = StyleSheet.create({
   },
   statText: {
     fontSize: 13,
-    color: "#64748b",
+    color: colors.textSecondary,
   },
 });

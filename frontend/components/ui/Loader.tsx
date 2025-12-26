@@ -1,9 +1,15 @@
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  View,
+  type ViewStyle,
+} from "react-native";
+import { colors } from "@/lib/theme";
 
 interface LoaderProps {
   size?: "small" | "large";
   fullScreen?: boolean;
-  style?: object;
+  style?: ViewStyle;
 }
 
 export function Loader({
@@ -14,12 +20,12 @@ export function Loader({
   if (fullScreen) {
     return (
       <View style={[styles.container, style]}>
-        <ActivityIndicator size={size} color="#6366f1" />
+        <ActivityIndicator size={size} color={colors.primary} />
       </View>
     );
   }
 
-  return <ActivityIndicator size={size} color="#6366f1" />;
+  return <ActivityIndicator size={size} color={colors.primary} />;
 }
 
 const styles = StyleSheet.create({

@@ -16,6 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@/components/ui/Button";
 import { useRegister } from "@/hooks/useAuth";
 import { ApiError } from "@/lib/api";
+import { colors } from "@/lib/theme";
 
 export default function RegisterScreen() {
   const [name, setName] = useState("");
@@ -70,7 +71,7 @@ export default function RegisterScreen() {
         >
           <View style={styles.header}>
             <View style={styles.logoContainer}>
-              <Ionicons name="person-add" size={40} color="#6366f1" />
+              <Ionicons name="person-add" size={40} color={colors.primary} />
             </View>
             <Text style={styles.title}>Create Account</Text>
             <Text style={styles.subtitle}>Join QueueLess and save time</Text>
@@ -83,13 +84,13 @@ export default function RegisterScreen() {
                 <Ionicons
                   name="person-outline"
                   size={20}
-                  color="#94a3b8"
+                  color={colors.textMuted}
                   style={styles.inputIcon}
                 />
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your name"
-                  placeholderTextColor="#94a3b8"
+                  placeholderTextColor={colors.textMuted}
                   value={name}
                   onChangeText={setName}
                   autoCapitalize="words"
@@ -103,13 +104,13 @@ export default function RegisterScreen() {
                 <Ionicons
                   name="mail-outline"
                   size={20}
-                  color="#94a3b8"
+                  color={colors.textMuted}
                   style={styles.inputIcon}
                 />
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your email"
-                  placeholderTextColor="#94a3b8"
+                  placeholderTextColor={colors.textMuted}
                   value={email}
                   onChangeText={setEmail}
                   keyboardType="email-address"
@@ -125,13 +126,13 @@ export default function RegisterScreen() {
                 <Ionicons
                   name="lock-closed-outline"
                   size={20}
-                  color="#94a3b8"
+                  color={colors.textMuted}
                   style={styles.inputIcon}
                 />
                 <TextInput
                   style={styles.input}
                   placeholder="Create a password"
-                  placeholderTextColor="#94a3b8"
+                  placeholderTextColor={colors.textMuted}
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
@@ -142,7 +143,7 @@ export default function RegisterScreen() {
                   <Ionicons
                     name={showPassword ? "eye-outline" : "eye-off-outline"}
                     size={20}
-                    color="#94a3b8"
+                    color={colors.textMuted}
                   />
                 </TouchableOpacity>
               </View>
@@ -154,13 +155,13 @@ export default function RegisterScreen() {
                 <Ionicons
                   name="lock-closed-outline"
                   size={20}
-                  color="#94a3b8"
+                  color={colors.textMuted}
                   style={styles.inputIcon}
                 />
                 <TextInput
                   style={styles.input}
                   placeholder="Confirm your password"
-                  placeholderTextColor="#94a3b8"
+                  placeholderTextColor={colors.textMuted}
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
                   secureTextEntry={!showPassword}
@@ -195,7 +196,7 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8fafc",
+    backgroundColor: colors.background,
   },
   keyboardView: {
     flex: 1,
@@ -214,7 +215,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 20,
-    backgroundColor: "#eef2ff",
+    backgroundColor: colors.primaryLight,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 16,
@@ -222,12 +223,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "800",
-    color: "#1e293b",
+    color: colors.text,
     marginBottom: 6,
   },
   subtitle: {
     fontSize: 15,
-    color: "#64748b",
+    color: colors.textSecondary,
   },
   inputGroup: {
     marginBottom: 16,
@@ -235,16 +236,16 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#475569",
+    color: colors.textLabel,
     marginBottom: 8,
   },
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: colors.card,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#e2e8f0",
+    borderColor: colors.border,
     paddingHorizontal: 16,
     height: 56,
   },
@@ -254,7 +255,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: "#1e293b",
+    color: colors.text,
   },
   footer: {
     flexDirection: "row",
@@ -263,11 +264,11 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 15,
-    color: "#64748b",
+    color: colors.textSecondary,
   },
   footerLink: {
     fontSize: 15,
-    color: "#6366f1",
+    color: colors.primary,
     fontWeight: "600",
   },
 });

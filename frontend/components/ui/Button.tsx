@@ -6,6 +6,7 @@ import {
   Text,
   type ViewStyle,
 } from "react-native";
+import { colors } from "@/lib/theme";
 
 type Variant =
   | "primary"
@@ -31,12 +32,16 @@ interface ButtonProps {
 
 const variants: Record<Variant, { bg: string; text: string; border?: string }> =
   {
-    primary: { bg: "#6366f1", text: "#fff" },
-    secondary: { bg: "#e2e8f0", text: "#475569" },
-    success: { bg: "#10b981", text: "#fff" },
-    danger: { bg: "#ef4444", text: "#fff" },
-    destructive: { bg: "#fef2f2", text: "#ef4444", border: "#fecaca" },
-    ghost: { bg: "rgba(255, 255, 255, 0.2)", text: "#fff" },
+    primary: { bg: colors.primary, text: colors.white },
+    secondary: { bg: colors.border, text: colors.textLabel },
+    success: { bg: colors.success, text: colors.white },
+    danger: { bg: colors.danger, text: colors.white },
+    destructive: {
+      bg: colors.dangerLight,
+      text: colors.danger,
+      border: colors.dangerBorder,
+    },
+    ghost: { bg: "rgba(255, 255, 255, 0.2)", text: colors.white },
   };
 
 const sizes: Record<

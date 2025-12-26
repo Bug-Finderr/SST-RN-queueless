@@ -5,6 +5,7 @@ import "react-native-reanimated";
 import { Loader } from "@/components/ui/Loader";
 import { useAuthState } from "@/hooks/useAuth";
 import { queryClient } from "@/lib/queryClient";
+import { colors } from "@/lib/theme";
 
 export default function RootLayout() {
   return (
@@ -17,7 +18,8 @@ export default function RootLayout() {
 function RootNavigator() {
   const { isLoading } = useAuthState();
 
-  if (isLoading) return <Loader style={{ backgroundColor: "#f8fafc" }} />;
+  if (isLoading)
+    return <Loader style={{ backgroundColor: colors.background }} />;
 
   return (
     <>

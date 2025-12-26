@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Button } from "@/components/ui/Button";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Loader } from "@/components/ui/Loader";
 import {
   useCallNextToken,
@@ -22,7 +23,8 @@ import {
   useServices,
   useSkipToken,
 } from "@/hooks/useQueue";
-import { ApiError } from "@/lib/api";
+import { showError } from "@/lib/error";
+import { colors } from "@/lib/theme";
 
 export default function AdminScreen() {
   const [selectedService, setSelectedService] = useState<string | null>(null);
@@ -64,11 +66,7 @@ export default function AdminScreen() {
           setAvgTime("");
           Alert.alert("Success", "Service created successfully");
         },
-        onError: (err) => {
-          const message =
-            err instanceof ApiError ? err.message : "Failed to create service";
-          Alert.alert("Error", message);
-        },
+        onError: (err) => showError(err, "Failed to create service"),
       },
     );
   };
@@ -92,11 +90,7 @@ export default function AdminScreen() {
           Alert.alert("Info", "No waiting tokens");
         }
       },
-      onError: (err) => {
-        const message =
-          err instanceof ApiError ? err.message : "Failed to call next token";
-        Alert.alert("Error", message);
-      },
+      onError: (err) => showError(err, "Failed to call next token"),
     });
   };
 
@@ -122,13 +116,7 @@ export default function AdminScreen() {
                   Alert.alert("Info", "No token being served");
                 }
               },
-              onError: (err) => {
-                const message =
-                  err instanceof ApiError
-                    ? err.message
-                    : "Failed to complete token";
-                Alert.alert("Error", message);
-              },
+              onError: (err) => showError(err, "Failed to complete token"),
             });
           },
         },
@@ -147,11 +135,7 @@ export default function AdminScreen() {
             onSuccess: () => {
               Alert.alert("Success", `Token #${tokenNumber} skipped`);
             },
-            onError: (err) => {
-              const message =
-                err instanceof ApiError ? err.message : "Failed to skip token";
-              Alert.alert("Error", message);
-            },
+            onError: (err) => showError(err, "Failed to skip token"),
           });
         },
       },
@@ -167,32 +151,29 @@ export default function AdminScreen() {
             style={styles.addButton}
             onPress={() => setShowCreateModal(true)}
           >
-            <Ionicons name="add" size={24} color="#fff" />
+            <Ionicons name="add" size={24} color={colors.white} />
           </TouchableOpacity>
         )}
       </View>
 
       {services.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Ionicons name="storefront-outline" size={64} color="#cbd5e1" />
-          <Text style={styles.emptyTitle}>No Services Yet</Text>
-          <Text style={styles.emptyText}>
-            Create your first service to start managing queues.
-          </Text>
-          <Button
-            label="Create Service"
-            icon="add"
-            onPress={() => setShowCreateModal(true)}
-            style={{ marginTop: 24 }}
-          />
-        </View>
+        <EmptyState
+          icon="storefront-outline"
+          title="No Services Yet"
+          description="Create your first service to start managing queues."
+          action={{
+            label: "Create Service",
+            icon: "add",
+            onPress: () => setShowCreateModal(true),
+          }}
+        />
       ) : (
         <ScrollView
           refreshControl={
             <RefreshControl
               refreshing={isRefetching}
               onRefresh={refetch}
-              colors={["#6366f1"]}
+              colors={[colors.primary]}
             />
           }
           contentContainerStyle={styles.content}
@@ -280,7 +261,7 @@ export default function AdminScreen() {
                       <Ionicons
                         name="checkmark-circle"
                         size={48}
-                        color="#10b981"
+                        color={colors.success}
                       />
                       <Text style={styles.emptyQueueText}>No one waiting</Text>
                     </View>
@@ -316,7 +297,7 @@ export default function AdminScreen() {
 
           {!selectedService && (
             <View style={styles.selectPrompt}>
-              <Ionicons name="arrow-up" size={32} color="#94a3b8" />
+              <Ionicons name="arrow-up" size={32} color={colors.textMuted} />
               <Text style={styles.selectPromptText}>
                 Select a service to manage its queue
               </Text>
@@ -380,7 +361,7 @@ export default function AdminScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8fafc",
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: "row",
@@ -392,13 +373,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "800",
-    color: "#1e293b",
+    color: colors.text,
   },
   addButton: {
     width: 44,
     height: 44,
     borderRadius: 12,
-    backgroundColor: "#6366f1",
+    backgroundColor: colors.primary,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -409,7 +390,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#475569",
+    color: colors.textLabel,
     marginBottom: 12,
   },
   serviceScroll: {
@@ -422,21 +403,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 10,
     paddingHorizontal: 16,
-    backgroundColor: "#e2e8f0",
+    backgroundColor: colors.border,
     borderRadius: 24,
     marginRight: 10,
     gap: 8,
   },
   serviceChipActive: {
-    backgroundColor: "#6366f1",
+    backgroundColor: colors.primary,
   },
   serviceChipText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#475569",
+    color: colors.textLabel,
   },
   serviceChipTextActive: {
-    color: "#fff",
+    color: colors.white,
   },
   chipBadge: {
     backgroundColor: "rgba(0,0,0,0.15)",
@@ -447,13 +428,13 @@ const styles = StyleSheet.create({
   chipBadgeText: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#fff",
+    color: colors.white,
   },
   queueSection: {
     flex: 1,
   },
   currentTokenCard: {
-    backgroundColor: "#6366f1",
+    backgroundColor: colors.primary,
     borderRadius: 20,
     padding: 24,
     alignItems: "center",
@@ -467,7 +448,7 @@ const styles = StyleSheet.create({
   currentTokenNumber: {
     fontSize: 48,
     fontWeight: "800",
-    color: "#fff",
+    color: colors.white,
     marginBottom: 16,
   },
   emptyQueue: {
@@ -476,7 +457,7 @@ const styles = StyleSheet.create({
   },
   emptyQueueText: {
     fontSize: 16,
-    color: "#10b981",
+    color: colors.success,
     fontWeight: "600",
     marginTop: 8,
   },
@@ -484,7 +465,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#fff",
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 16,
     marginBottom: 8,
@@ -498,17 +479,17 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "#f1f5f9",
+    backgroundColor: colors.backgroundAlt,
     textAlign: "center",
     lineHeight: 32,
     fontSize: 14,
     fontWeight: "700",
-    color: "#64748b",
+    color: colors.textSecondary,
   },
   queueTokenNumber: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#1e293b",
+    color: colors.text,
   },
   selectPrompt: {
     alignItems: "center",
@@ -516,7 +497,7 @@ const styles = StyleSheet.create({
   },
   selectPromptText: {
     fontSize: 16,
-    color: "#94a3b8",
+    color: colors.textMuted,
     marginTop: 12,
   },
   inputGroup: {
@@ -525,38 +506,21 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#475569",
+    color: colors.textLabel,
     marginBottom: 8,
   },
   input: {
-    backgroundColor: "#f8fafc",
+    backgroundColor: colors.background,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#e2e8f0",
+    borderColor: colors.border,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 16,
-    color: "#1e293b",
+    color: colors.text,
   },
   textArea: {
     height: 80,
     textAlignVertical: "top",
-  },
-  emptyContainer: {
-    alignItems: "center",
-    paddingTop: "60%",
-  },
-  emptyTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#475569",
-    marginTop: 16,
-  },
-  emptyText: {
-    fontSize: 15,
-    color: "#94a3b8",
-    textAlign: "center",
-    marginTop: 8,
-    maxWidth: 280,
   },
 });

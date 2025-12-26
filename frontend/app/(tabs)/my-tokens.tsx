@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
   Alert,
@@ -11,9 +10,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TokenCard from "@/components/TokenCard";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Loader } from "@/components/ui/Loader";
 import { useCancelToken, useMyTokens } from "@/hooks/useQueue";
-import { ApiError } from "@/lib/api";
+import { showError } from "@/lib/error";
+import { colors } from "@/lib/theme";
 
 type FilterType = "active" | "history";
 
@@ -42,13 +43,7 @@ export default function MyTokensScreen() {
               onSuccess: () => {
                 Alert.alert("Success", "Token canceled successfully");
               },
-              onError: (err) => {
-                const message =
-                  err instanceof ApiError
-                    ? err.message
-                    : "Failed to cancel token";
-                Alert.alert("Error", message);
-              },
+              onError: (err) => showError(err, "Failed to cancel token"),
             });
           },
         },
@@ -66,17 +61,15 @@ export default function MyTokensScreen() {
   const displayTokens = filter === "active" ? activeTokens : historyTokens;
 
   const renderEmpty = () => (
-    <View style={styles.emptyContainer}>
-      <Ionicons name="ticket-outline" size={64} color="#cbd5e1" />
-      <Text style={styles.emptyTitle}>
-        {filter === "active" ? "No Active Tokens" : "No History"}
-      </Text>
-      <Text style={styles.emptyText}>
-        {filter === "active"
+    <EmptyState
+      icon="ticket-outline"
+      title={filter === "active" ? "No Active Tokens" : "No History"}
+      description={
+        filter === "active"
           ? "Book a token from the Services tab to get started"
-          : "Your past tokens will appear here"}
-      </Text>
-    </View>
+          : "Your past tokens will appear here"
+      }
+    />
   );
 
   return (
@@ -132,7 +125,7 @@ export default function MyTokensScreen() {
             <RefreshControl
               refreshing={isRefetchingTokens}
               onRefresh={refetchTokens}
-              colors={["#6366f1"]}
+              colors={[colors.primary]}
             />
           }
           ListEmptyComponent={renderEmpty}
@@ -161,7 +154,7 @@ export default function MyTokensScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8fafc",
+    backgroundColor: colors.background,
   },
   header: {
     paddingHorizontal: 20,
@@ -171,11 +164,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "800",
-    color: "#1e293b",
+    color: colors.text,
   },
   subtitle: {
     fontSize: 15,
-    color: "#64748b",
+    color: colors.textSecondary,
     marginTop: 4,
   },
   filterContainer: {
@@ -188,39 +181,21 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 20,
-    backgroundColor: "#e2e8f0",
+    backgroundColor: colors.border,
   },
   filterActive: {
-    backgroundColor: "#6366f1",
+    backgroundColor: colors.primary,
   },
   filterText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#64748b",
+    color: colors.textSecondary,
   },
   filterTextActive: {
-    color: "#fff",
+    color: colors.white,
   },
   list: {
     paddingHorizontal: 20,
     paddingBottom: 20,
-  },
-  emptyContainer: {
-    alignItems: "center",
-    paddingTop: "54%",
-    paddingHorizontal: 40,
-  },
-  emptyTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#475569",
-    marginTop: 16,
-  },
-  emptyText: {
-    fontSize: 15,
-    color: "#94a3b8",
-    textAlign: "center",
-    marginTop: 8,
-    lineHeight: 22,
   },
 });

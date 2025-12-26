@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { useAuthState } from "@/hooks/useAuth";
+import { colors } from "@/lib/theme";
 
 export default function TabLayout() {
   const { user } = useAuthState();
@@ -10,11 +11,11 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#6366f1",
-        tabBarInactiveTintColor: "#94a3b8",
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: {
-          backgroundColor: "#fff",
-          borderTopColor: "#e2e8f0",
+          backgroundColor: colors.card,
+          borderTopColor: colors.border,
           height: 60,
           paddingBottom: 6,
           paddingTop: 4,
