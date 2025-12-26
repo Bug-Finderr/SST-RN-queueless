@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
   FlatList,
   RefreshControl,
@@ -12,6 +11,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TokenCard from "@/components/TokenCard";
+import { Loader } from "@/components/ui/Loader";
 import { useCancelToken, useMyTokens } from "@/hooks/use-queue";
 import { ApiError } from "@/lib/api";
 
@@ -121,9 +121,7 @@ export default function MyTokensScreen() {
       </View>
 
       {isLoadingTokens && !tokens.length ? (
-        <View style={styles.loader}>
-          <ActivityIndicator size="large" color="#6366f1" />
-        </View>
+        <Loader />
       ) : (
         <FlatList
           data={displayTokens}
@@ -205,11 +203,6 @@ const styles = StyleSheet.create({
   list: {
     paddingHorizontal: 20,
     paddingBottom: 20,
-  },
-  loader: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
   emptyContainer: {
     alignItems: "center",

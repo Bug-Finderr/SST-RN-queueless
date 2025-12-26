@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
 import "react-native-reanimated";
+import { Loader } from "@/components/ui/Loader";
 import { useAuthState } from "@/hooks/use-auth";
 
 const queryClient = new QueryClient();
@@ -18,13 +18,7 @@ export default function RootLayout() {
 function RootNavigator() {
   const { isLoading } = useAuthState();
 
-  if (isLoading) {
-    return (
-      <View style={styles.loader}>
-        <ActivityIndicator size="large" color="#6366f1" />
-      </View>
-    );
-  }
+  if (isLoading) return <Loader style={{ backgroundColor: "#f8fafc" }} />;
 
   return (
     <>
@@ -37,12 +31,3 @@ function RootNavigator() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  loader: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#f8fafc",
-  },
-});

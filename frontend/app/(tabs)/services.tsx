@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
   FlatList,
   RefreshControl,
@@ -11,6 +10,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ServiceCard from "@/components/ServiceCard";
+import { Loader } from "@/components/ui/Loader";
 import { useBookToken, useServices } from "@/hooks/use-queue";
 import { ApiError } from "@/lib/api";
 
@@ -68,9 +68,7 @@ export default function ServicesScreen() {
       </View>
 
       {isLoadingServices && !services.length ? (
-        <View style={styles.loader}>
-          <ActivityIndicator size="large" color="#6366f1" />
-        </View>
+        <Loader />
       ) : (
         <FlatList
           data={services}
@@ -96,7 +94,7 @@ export default function ServicesScreen() {
               />
               {bookingServiceId === item.id && (
                 <View style={styles.bookingOverlay}>
-                  <ActivityIndicator size="small" color="#6366f1" />
+                  <Loader size="small" fullScreen={false} />
                 </View>
               )}
             </View>
@@ -130,11 +128,6 @@ const styles = StyleSheet.create({
   list: {
     paddingHorizontal: 20,
     paddingBottom: 20,
-  },
-  loader: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
   emptyContainer: {
     alignItems: "center",

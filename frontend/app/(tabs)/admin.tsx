@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
   RefreshControl,
   ScrollView,
@@ -14,6 +13,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Button } from "@/components/ui/Button";
+import { Loader } from "@/components/ui/Loader";
 import {
   useCallNextToken,
   useCompleteToken,
@@ -238,7 +238,7 @@ export default function AdminScreen() {
           {selectedService && (
             <View style={styles.queueSection}>
               {isLoadingQueue ? (
-                <ActivityIndicator size="large" color="#6366f1" />
+                <Loader />
               ) : queueStatus ? (
                 <>
                   {/* Current Token */}
@@ -406,6 +406,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   content: {
+    flexGrow: 1,
     padding: 20,
   },
   sectionTitle: {
@@ -415,6 +416,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   serviceScroll: {
+    flexGrow: 0,
+    flexShrink: 0,
     marginBottom: 24,
   },
   serviceChip: {
