@@ -22,26 +22,6 @@ bun run start
 
 **Admin:** Create services, call next, skip, complete tokens
 
-## API
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/api/auth/register` | - | Register user |
-| POST | `/api/auth/login` | - | Login, get JWT |
-| GET | `/api/auth/me` | User | Get current user |
-| GET | `/api/services` | - | List active services |
-| POST | `/api/services` | Admin | Create service |
-| PUT | `/api/services/:id` | Admin | Update service |
-| DELETE | `/api/services/:id` | Admin | Soft delete service |
-| POST | `/api/tokens/book?service_id=` | User | Book token |
-| GET | `/api/tokens/my` | User | Get user's tokens |
-| DELETE | `/api/tokens/:id` | User | Cancel token |
-| GET | `/api/tokens/notifications` | User | Get near-turn alerts |
-| GET | `/api/tokens/queue/:serviceId` | User | Queue status |
-| POST | `/api/tokens/call-next/:serviceId` | Admin | Call next token |
-| POST | `/api/tokens/complete/:serviceId` | Admin | Complete current |
-| POST | `/api/tokens/skip/:tokenId` | Admin | Skip token |
-
 ## Tech Stack
 
 | Layer | Tech |
