@@ -1,0 +1,221 @@
+# Backend Architecture
+
+Queue/token management API. Users book tokens → wait → get notified → served.
+
+## Database Schema
+
+### Users
+```ts
+{ email, name, passwordHash, role: "user" | "admin", createdAt }
+```
+
+### Services
+```ts
+{ name, description, avgServiceTimeMins, isActive, createdAt }
+```
+- `isActive` for soft delete (tokens reference services)
+
+### Tokens
+```ts
+{
+  tokenNumber,
+  userId, serviceId,
+  status: "waiting" | "being_served" | "completed" | "skipped" | "canceled",
+  createdAt, calledAt?, completedAt?
+}
+```
+
+**State transitions:**
+```
+        canceled
+       ↗
+waiting → being_served → completed
+       ↘
+        skipped
+```
+
+---
+
+## Indexes
+
+```ts
+tokenSchema.index({ serviceId: 1, status: 1, createdAt: 1 });
+tokenSchema.index({ userId: 1, serviceId: 1, status: 1 });
+```
+
+| Index | Query Pattern |
+|-------|---------------|
+| `{ serviceId, status, createdAt }` | Queue position, waiting list ordered by time |
+| `{ userId, serviceId, status }` | Check if user has active token for service |
+| `users.email` (unique) | Login lookup |
+
+Compound indexes cover prefix queries (e.g., `{ serviceId, status, createdAt }` also covers `{ serviceId }` alone).
+
+---
+
+## Atomic Token Numbering
+
+```ts
+// services/queue.ts
+const counter = await Counter.findOneAndUpdate(
+  { _id: `${serviceId}_${date}` },
+  { $inc: { seq: 1 } },
+  { new: true, upsert: true }
+);
+```
+
+- `$inc` is atomic at DB level — no race conditions
+- Counter ID includes date → resets daily
+
+---
+
+## Aggregation for Service List
+
+```ts
+// routes/services.ts
+Service.aggregate([
+  { $match: { isActive: true } },
+  { $lookup: {
+      from: "tokens",
+      let: { serviceId: "$_id" },
+      pipeline: [
+        { $match: { $expr: { $eq: ["$serviceId", "$$serviceId"] }, status: { $in: ["waiting", "being_served"] } } },
+        { $group: { _id: "$status", count: { $sum: 1 }, token: { $first: "$$ROOT" } } }
+      ],
+      as: "tokenStats"
+  }}
+]);
+```
+
+| Approach | Queries for N services |
+|----------|------------------------|
+| Loop with findOne + count | 2N + 1 |
+| Aggregation with $lookup | 1 |
+
+---
+
+## Auth Flow
+
+1. Register: `Bun.password.hash()` → store
+2. Login: `Bun.password.verify()` → issue JWT
+3. Request: `Authorization: Bearer <token>` → middleware verifies
+
+```ts
+// middleware/auth.ts
+export async function requireAuth(req): Promise<AuthenticatedUser | Response>
+export async function requireAdmin(req): Promise<AuthenticatedUser | Response>
+```
+
+Handlers call `requireAuth`/`requireAdmin` first — returns user object or 401/403 Response.
+
+---
+
+## Request Flow
+
+```
+Request → index.ts (CORS) → router.ts (match) → routes/*.ts → middleware/auth.ts → services/ → models/ → Response
+```
+
+---
+
+## Router Design
+
+```ts
+// router.ts
+export const routes = [
+  { method: "GET", path: "/api/services", handler: () => handleListServices() },
+  { method: "POST", path: "/api/auth/login", handler: (req) => handleLogin(req) },
+];
+```
+
+Routes as data, not framework calls. Same `routes` array works for both `Bun.serve` and Express.
+
+---
+
+## Validation
+
+```ts
+// utils/validation.ts
+export const validateId = (id: string, resource = "Resource") =>
+  objectIdSchema.safeParse(id).success ? null : notFound(`${resource} not found`);
+```
+
+Returns `null` if valid, `Response` if invalid. Handlers use:
+```ts
+const err = validateId(id, "Service");
+if (err) return err;
+```
+
+---
+
+## Queue Logic
+
+**Position:**
+```ts
+count = tokens where serviceId matches AND status = "waiting" AND createdAt < this.createdAt
+position = count + 1
+```
+
+**Wait time:**
+```ts
+estimatedWait = (position - 1) * service.avgServiceTimeMins
+```
+
+---
+
+## Notification
+
+```ts
+getNotificationMessage(status, position) → string | null
+```
+
+- `being_served` → "It's your turn!"
+- `waiting` && position ≤ 3 → "Your turn is coming up!"
+- Otherwise → `null`
+
+Threshold configurable via `NOTIFY_POSITION` env.
+
+---
+
+## Config
+
+```ts
+// config.ts
+const required = (key) => process.env[key] ?? throw new Error(`Missing: ${key}`);
+
+export const config = {
+  mongoUri: required("MONGO_URI"),
+  port: Number(process.env.PORT) || 8000,  // optional
+};
+
+export const corsHeaders = { ... };  // shared by index.ts + index.express.ts
+```
+
+---
+
+## Types
+
+```ts
+// types/token.ts
+export interface PopulatedToken extends Omit<IToken, "serviceId"> {
+  serviceId: { _id: ObjectId; name: string };
+}
+```
+
+Used after `.populate()` — Mongoose returns different shape than schema type.
+
+---
+
+## Tech Choices
+
+| Choice | Why |
+|--------|-----|
+| Bun over Node | Built-in TS, password hashing, .env loading, faster startup and much more |
+| MongoDB | Schema flexibility, aggregation pipeline, atomic `$inc` |
+| Mongoose | Schema validation, TypeScript types, `.populate()` |
+| Zod | Runtime validation + TS inference |
+| Soft delete (services) | Tokens reference services; hard delete breaks references |
+
+--- 
+
+> _This document was generated by AI to supplement the project documentation._
