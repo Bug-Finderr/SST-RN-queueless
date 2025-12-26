@@ -25,18 +25,15 @@ import {
 import { ApiError } from "@/lib/api";
 
 export default function AdminScreen() {
-  const { data: services = [], isRefetching, refetch } = useServices();
   const [selectedService, setSelectedService] = useState<string | null>(null);
-  const { data: queueStatus, isLoading: isLoadingQueue } =
-    useQueueStatus(selectedService);
-
-  // Modal state
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [serviceName, setServiceName] = useState("");
   const [serviceDesc, setServiceDesc] = useState("");
   const [avgTime, setAvgTime] = useState("");
 
-  // Mutations
+  const { data: services = [], isRefetching, refetch } = useServices();
+  const { data: queueStatus, isLoading: isLoadingQueue } =
+    useQueueStatus(selectedService);
   const { mutate: createService, isPending: isCreatingService } =
     useCreateService();
   const { mutate: callNextToken } = useCallNextToken();
@@ -64,7 +61,7 @@ export default function AdminScreen() {
           setShowCreateModal(false);
           setServiceName("");
           setServiceDesc("");
-          setAvgTime("5");
+          setAvgTime("");
           Alert.alert("Success", "Service created successfully");
         },
         onError: (err) => {

@@ -18,13 +18,14 @@ import { useRegister } from "@/hooks/use-auth";
 import { ApiError } from "@/lib/api";
 
 export default function RegisterScreen() {
-  const router = useRouter();
-  const { mutate: register, isPending: isRegisterPending } = useRegister();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const router = useRouter();
+  const { mutate: register, isPending: isRegisterPending } = useRegister();
 
   const handleRegister = () => {
     if (!name.trim() || !email.trim() || !password.trim()) {

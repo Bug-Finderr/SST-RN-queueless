@@ -18,6 +18,8 @@ import { ApiError } from "@/lib/api";
 type FilterType = "active" | "history";
 
 export default function MyTokensScreen() {
+  const [filter, setFilter] = useState<FilterType>("active");
+
   const {
     data: tokens = [],
     isLoading: isLoadingTokens,
@@ -25,7 +27,6 @@ export default function MyTokensScreen() {
     refetch: refetchTokens,
   } = useMyTokens();
   const { mutate: cancelToken } = useCancelToken();
-  const [filter, setFilter] = useState<FilterType>("active");
 
   const handleCancel = (tokenId: string, tokenNumber: number) => {
     Alert.alert(

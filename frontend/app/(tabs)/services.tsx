@@ -15,6 +15,8 @@ import { useBookToken, useServices } from "@/hooks/use-queue";
 import { ApiError } from "@/lib/api";
 
 export default function ServicesScreen() {
+  const [bookingServiceId, setBookingServiceId] = useState<string | null>(null);
+
   const {
     data: services = [],
     isLoading: isLoadingServices,
@@ -22,7 +24,6 @@ export default function ServicesScreen() {
     refetch: refetchServices,
   } = useServices();
   const { mutate: bookToken } = useBookToken();
-  const [bookingServiceId, setBookingServiceId] = useState<string | null>(null);
 
   const handleBookToken = (serviceId: string, serviceName: string) => {
     Alert.alert("Book Token", `Book a token for ${serviceName}?`, [

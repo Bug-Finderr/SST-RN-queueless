@@ -18,11 +18,12 @@ import { useLogin } from "@/hooks/use-auth";
 import { ApiError } from "@/lib/api";
 
 export default function LoginScreen() {
-  const router = useRouter();
-  const { mutate: login, isPending: isLoginPending } = useLogin();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const router = useRouter();
+  const { mutate: login, isPending: isLoginPending } = useLogin();
 
   const handleLogin = () => {
     if (!email.trim() || !password.trim()) {
