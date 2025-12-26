@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { notFound } from "./response";
+
 // User validation schemas
 export const registerSchema = z.object({
   email: z.string().email("Invalid email format").max(255),
@@ -53,3 +55,9 @@ export function validate<T>(
 
   return { success: true, data: result.data };
 }
+
+// Validate ObjectId, returns error Response or null if valid
+export const validateId = (id: string, resource = "Resource") =>
+  objectIdSchema.safeParse(id).success
+    ? null
+    : notFound(`${resource} not found`);

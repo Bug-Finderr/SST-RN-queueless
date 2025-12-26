@@ -13,9 +13,13 @@ import {
   getQueueStatus,
   hasActiveToken,
 } from "../services/queue";
-import type { AuthenticatedUser, ITokenDocument } from "../types";
+import type {
+  AuthenticatedUser,
+  ITokenDocument,
+  PopulatedToken,
+} from "../types";
 import { badRequest, forbidden, notFound } from "../utils/response";
-import { objectIdSchema, validate } from "../utils/validation";
+import { validateId } from "../utils/validation";
 
 // Book a new token
 export async function handleBookToken(request: Request): Promise<Response> {
@@ -23,37 +27,23 @@ export async function handleBookToken(request: Request): Promise<Response> {
   if (authResult instanceof Response) return authResult;
   const user = authResult as AuthenticatedUser;
 
-  // Get service_id from query params
-  const url = new URL(request.url);
-  const serviceId = url.searchParams.get("service_id");
+  const serviceId = new URL(request.url).searchParams.get("service_id");
+  if (!serviceId) return badRequest("service_id query parameter is required");
 
-  if (!serviceId) {
-    return badRequest("service_id query parameter is required");
-  }
+  const idError = validateId(serviceId, "Service");
+  if (idError) return idError;
 
-  const idValidation = validate(objectIdSchema, serviceId);
-  if (!idValidation.success) return notFound("Service not found");
-
-  // Check service exists and is active
   const service = await Service.findOne({
     _id: new mongoose.Types.ObjectId(serviceId),
     isActive: true,
   }).lean();
+  if (!service) return notFound("Service not found");
 
-  if (!service) {
-    return notFound("Service not found");
-  }
-
-  // Check user doesn't already have active token
-  const alreadyHasToken = await hasActiveToken(user.id, serviceId);
-  if (alreadyHasToken) {
+  if (await hasActiveToken(user.id, serviceId)) {
     return badRequest("You already have an active token for this service");
   }
 
-  // Get next token number (atomic)
   const tokenNumber = await getNextTokenNumber(serviceId);
-
-  // Create token
   const token = await Token.create({
     tokenNumber,
     userId: new mongoose.Types.ObjectId(user.id),
@@ -61,7 +51,6 @@ export async function handleBookToken(request: Request): Promise<Response> {
     status: "waiting",
   });
 
-  // Calculate position and wait time
   const position = await getQueuePosition(token);
   const estimatedWaitMins = await getEstimatedWaitMins(
     token.serviceId,
@@ -74,10 +63,7 @@ export async function handleBookToken(request: Request): Promise<Response> {
       tokenNumber: token.tokenNumber,
       status: token.status,
       createdAt: token.createdAt,
-      service: {
-        id: service._id.toString(),
-        name: service.name,
-      },
+      service: { id: service._id.toString(), name: service.name },
       positionInQueue: position,
       estimatedWaitMins,
     },
@@ -91,13 +77,13 @@ export async function handleGetMyTokens(request: Request): Promise<Response> {
   if (authResult instanceof Response) return authResult;
   const user = authResult as AuthenticatedUser;
 
-  const tokens = await Token.find({
+  const tokens = (await Token.find({
     userId: new mongoose.Types.ObjectId(user.id),
   })
     .sort({ createdAt: -1 })
     .limit(50)
     .populate("serviceId", "name description avgServiceTimeMins")
-    .lean();
+    .lean()) as unknown as PopulatedToken[];
 
   const tokensWithDetails = await Promise.all(
     tokens.map(async (token) => {
@@ -105,22 +91,9 @@ export async function handleGetMyTokens(request: Request): Promise<Response> {
         token.status === "waiting"
           ? await getQueuePosition(token as unknown as ITokenDocument)
           : null;
-
       const estimatedWaitMins = position
-        ? await getEstimatedWaitMins(
-            token.serviceId as mongoose.Types.ObjectId,
-            position,
-          )
+        ? await getEstimatedWaitMins(token.serviceId._id, position)
         : null;
-
-      const notification = getNotificationMessage(token.status, position ?? 0);
-
-      const service = token.serviceId as unknown as {
-        _id: mongoose.Types.ObjectId;
-        name: string;
-        description: string;
-        avgServiceTimeMins: number;
-      };
 
       return {
         id: token._id.toString(),
@@ -130,12 +103,12 @@ export async function handleGetMyTokens(request: Request): Promise<Response> {
         calledAt: token.calledAt,
         completedAt: token.completedAt,
         service: {
-          id: service._id.toString(),
-          name: service.name,
+          id: token.serviceId._id.toString(),
+          name: token.serviceId.name,
         },
         positionInQueue: position,
         estimatedWaitMins,
-        notification,
+        notification: getNotificationMessage(token.status, position ?? 0),
       };
     }),
   );
@@ -151,39 +124,34 @@ export async function handleGetNotifications(
   if (authResult instanceof Response) return authResult;
   const user = authResult as AuthenticatedUser;
 
-  const activeTokens = await Token.find({
+  const tokens = (await Token.find({
     userId: new mongoose.Types.ObjectId(user.id),
     status: { $in: ["waiting", "being_served"] },
   })
     .populate("serviceId", "name")
-    .lean();
+    .lean()) as unknown as PopulatedToken[];
 
-  const notifications = await Promise.all(
-    activeTokens.map(async (token) => {
-      const position =
-        token.status === "waiting"
-          ? await getQueuePosition(token as unknown as ITokenDocument)
-          : 0;
+  const notifications = (
+    await Promise.all(
+      tokens.map(async (token) => {
+        const position =
+          token.status === "waiting"
+            ? await getQueuePosition(token as unknown as ITokenDocument)
+            : 0;
+        const message = getNotificationMessage(token.status, position);
+        if (!message) return null;
+        return {
+          tokenId: token._id.toString(),
+          tokenNumber: token.tokenNumber,
+          serviceName: token.serviceId.name,
+          position,
+          message,
+        };
+      }),
+    )
+  ).filter(Boolean);
 
-      const message = getNotificationMessage(token.status, position);
-      if (!message) return null;
-
-      const service = token.serviceId as unknown as {
-        _id: mongoose.Types.ObjectId;
-        name: string;
-      };
-
-      return {
-        tokenId: token._id.toString(),
-        tokenNumber: token.tokenNumber,
-        serviceName: service.name,
-        position,
-        message,
-      };
-    }),
-  );
-
-  return Response.json(notifications.filter(Boolean));
+  return Response.json(notifications);
 }
 
 // Cancel token
@@ -195,20 +163,16 @@ export async function handleCancelToken(
   if (authResult instanceof Response) return authResult;
   const user = authResult as AuthenticatedUser;
 
-  const idValidation = validate(objectIdSchema, tokenId);
-  if (!idValidation.success) return notFound("Token not found");
+  const idError = validateId(tokenId, "Token");
+  if (idError) return idError;
 
   const token = await Token.findById(tokenId);
-  if (!token) {
-    return notFound("Token not found");
-  }
+  if (!token) return notFound("Token not found");
 
-  // Check authorization: user can cancel their own, admin can cancel any
   if (token.userId.toString() !== user.id && user.role !== "admin") {
     return forbidden("You can only cancel your own tokens");
   }
 
-  // Check token is cancelable
   if (!["waiting", "being_served"].includes(token.status)) {
     return badRequest(
       "Token cannot be canceled - it has already been processed",
@@ -226,17 +190,13 @@ export async function handleCancelToken(
 export async function handleGetQueueStatus(
   serviceId: string,
 ): Promise<Response> {
-  const idValidation = validate(objectIdSchema, serviceId);
-  if (!idValidation.success) return notFound("Service not found");
+  const idError = validateId(serviceId, "Service");
+  if (idError) return idError;
 
   const service = await Service.findById(serviceId).lean();
-  if (!service) {
-    return notFound("Service not found");
-  }
+  if (!service) return notFound("Service not found");
 
-  const queueStatus = await getQueueStatus(serviceId);
-
-  return Response.json(queueStatus);
+  return Response.json(await getQueueStatus(serviceId));
 }
 
 // Complete current token (admin only)
@@ -247,23 +207,19 @@ export async function handleCompleteToken(
   const authResult = await requireAdmin(request);
   if (authResult instanceof Response) return authResult;
 
-  const idValidation = validate(objectIdSchema, serviceId);
-  if (!idValidation.success) return notFound("Service not found");
+  const idError = validateId(serviceId, "Service");
+  if (idError) return idError;
 
   const result = await completeCurrentToken(serviceId);
-
-  if (!result.completed) {
-    return Response.json({
-      message: "No token is currently being served",
-      completed: false,
-    });
-  }
-
-  return Response.json({
-    message: `Token #${result.tokenNumber} completed`,
-    completed: true,
-    tokenNumber: result.tokenNumber,
-  });
+  return Response.json(
+    result.completed
+      ? {
+          message: `Token #${result.tokenNumber} completed`,
+          completed: true,
+          tokenNumber: result.tokenNumber,
+        }
+      : { message: "No token is currently being served", completed: false },
+  );
 }
 
 // Call next token (admin only)
@@ -274,29 +230,26 @@ export async function handleCallNext(
   const authResult = await requireAdmin(request);
   if (authResult instanceof Response) return authResult;
 
-  const idValidation = validate(objectIdSchema, serviceId);
-  if (!idValidation.success) return notFound("Service not found");
+  const idError = validateId(serviceId, "Service");
+  if (idError) return idError;
 
-  // Complete current token first
   const completedResult = await completeCurrentToken(serviceId);
-
-  // Call next
   const nextResult = await callNextToken(serviceId);
 
-  if (!nextResult.called) {
-    return Response.json({
-      message: "No waiting tokens in queue",
-      completedPrevious: completedResult.completed,
-      nextTokenNumber: null,
-    });
-  }
-
-  return Response.json({
-    message: `Now serving token #${nextResult.tokenNumber}`,
-    completedPrevious: completedResult.completed,
-    nextTokenNumber: nextResult.tokenNumber,
-    nextTokenId: nextResult.tokenId,
-  });
+  return Response.json(
+    nextResult.called
+      ? {
+          message: `Now serving token #${nextResult.tokenNumber}`,
+          completedPrevious: completedResult.completed,
+          nextTokenNumber: nextResult.tokenNumber,
+          nextTokenId: nextResult.tokenId,
+        }
+      : {
+          message: "No waiting tokens in queue",
+          completedPrevious: completedResult.completed,
+          nextTokenNumber: null,
+        },
+  );
 }
 
 // Skip token (admin only)
@@ -307,13 +260,11 @@ export async function handleSkipToken(
   const authResult = await requireAdmin(request);
   if (authResult instanceof Response) return authResult;
 
-  const idValidation = validate(objectIdSchema, tokenId);
-  if (!idValidation.success) return notFound("Token not found");
+  const idError = validateId(tokenId, "Token");
+  if (idError) return idError;
 
   const token = await Token.findById(tokenId);
-  if (!token) {
-    return notFound("Token not found");
-  }
+  if (!token) return notFound("Token not found");
 
   if (!["waiting", "being_served"].includes(token.status)) {
     return badRequest(
@@ -339,8 +290,8 @@ export async function handleGetServiceTokens(
   const authResult = await requireAdmin(request);
   if (authResult instanceof Response) return authResult;
 
-  const idValidation = validate(objectIdSchema, serviceId);
-  if (!idValidation.success) return notFound("Service not found");
+  const idError = validateId(serviceId, "Service");
+  if (idError) return idError;
 
   const tokens = await Token.find({
     serviceId: new mongoose.Types.ObjectId(serviceId),

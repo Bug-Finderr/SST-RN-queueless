@@ -21,3 +21,14 @@ export interface IToken {
 export interface ITokenDocument extends IToken, Document {
   _id: mongoose.Types.ObjectId;
 }
+
+// Token with populated service (after .populate())
+export interface PopulatedToken extends Omit<IToken, "serviceId"> {
+  _id: mongoose.Types.ObjectId;
+  serviceId: {
+    _id: mongoose.Types.ObjectId;
+    name: string;
+    description?: string;
+    avgServiceTimeMins?: number;
+  };
+}
