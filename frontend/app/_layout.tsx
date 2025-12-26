@@ -4,7 +4,6 @@ import { StatusBar } from "expo-status-bar";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import "react-native-reanimated";
 import { useAuthState } from "@/hooks/use-auth";
-import "../global.css";
 
 const queryClient = new QueryClient();
 
