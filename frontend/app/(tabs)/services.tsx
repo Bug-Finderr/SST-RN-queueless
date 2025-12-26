@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import ServiceCard from "@/components/ServiceCard";
 import { Loader } from "@/components/ui/Loader";
-import { useBookToken, useServices } from "@/hooks/use-queue";
+import { useBookToken, useServices } from "@/hooks/useQueue";
 import { ApiError } from "@/lib/api";
 
 export default function ServicesScreen() {

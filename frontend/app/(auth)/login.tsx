@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@/components/ui/Button";
-import { useLogin } from "@/hooks/use-auth";
+import { useLogin } from "@/hooks/useAuth";
 import { ApiError } from "@/lib/api";
 
 export default function LoginScreen() {

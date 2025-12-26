@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { useAuthState } from "@/hooks/use-auth";
+import { useAuthState } from "@/hooks/useAuth";
 
 export default function TabLayout() {
   const { user } = useAuthState();

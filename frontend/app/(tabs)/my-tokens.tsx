@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import TokenCard from "@/components/TokenCard";
 import { Loader } from "@/components/ui/Loader";
-import { useCancelToken, useMyTokens } from "@/hooks/use-queue";
+import { useCancelToken, useMyTokens } from "@/hooks/useQueue";
 import { ApiError } from "@/lib/api";
 
 type FilterType = "active" | "history";

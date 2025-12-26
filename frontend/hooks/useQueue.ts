@@ -1,7 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import { queryClient } from "@/lib/queryClient";
 import type { QueueStatus, Service, Token, TokenNotification } from "@/types";
-import { useAuthState } from "./use-auth";
+import { useAuthState } from "./useAuth";
 
 // Query keys
 export const queueKeys = {
@@ -56,8 +57,6 @@ export function useQueueStatus(serviceId: string | null) {
 // Mutations
 
 export function useBookToken() {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (serviceId: string) =>
       api.post<Token>(`/api/tokens/book?service_id=${serviceId}`),
@@ -69,8 +68,6 @@ export function useBookToken() {
 }
 
 export function useCancelToken() {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (tokenId: string) => api.delete(`/api/tokens/${tokenId}`),
     onSuccess: () => {
@@ -81,8 +78,6 @@ export function useCancelToken() {
 }
 
 export function useCreateService() {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (data: {
       name: string;
@@ -96,8 +91,6 @@ export function useCreateService() {
 }
 
 export function useCallNextToken() {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (serviceId: string) =>
       api.post<{
@@ -116,8 +109,6 @@ export function useCallNextToken() {
 }
 
 export function useCompleteToken() {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (serviceId: string) =>
       api.post<{ message: string; completed: boolean; tokenNumber?: number }>(
@@ -134,8 +125,6 @@ export function useCompleteToken() {
 }
 
 export function useSkipToken() {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (tokenId: string) => api.post(`/api/tokens/skip/${tokenId}`),
     onSuccess: () => {

@@ -21,7 +21,7 @@ import {
   useQueueStatus,
   useServices,
   useSkipToken,
-} from "@/hooks/use-queue";
+} from "@/hooks/useQueue";
 import { ApiError } from "@/lib/api";
 
 export default function AdminScreen() {

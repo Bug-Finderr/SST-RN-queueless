@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@/components/ui/Button";
-import { useAuthState, useLogout } from "@/hooks/use-auth";
+import { useAuthState, useLogout } from "@/hooks/useAuth";
 
 const showToast = (message: string) => {
   if (Platform.OS === "android") {

@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
+import { queryClient } from "@/lib/queryClient";
 import type { User } from "@/types";
 
 // Query keys
@@ -17,8 +18,6 @@ interface AuthResponse {
 
 // Login mutation
 export function useLogin() {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (credentials: { email: string; password: string }) =>
       api.post<AuthResponse>("/api/auth/login", credentials),
@@ -32,8 +31,6 @@ export function useLogin() {
 
 // Register mutation
 export function useRegister() {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (data: { email: string; password: string; name: string }) =>
       api.post<AuthResponse>("/api/auth/register", data),
@@ -47,8 +44,6 @@ export function useRegister() {
 
 // Logout mutation
 export function useLogout() {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: async () => {
       await AsyncStorage.removeItem("token");
