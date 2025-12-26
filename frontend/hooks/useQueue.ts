@@ -71,6 +71,7 @@ export function useQueueStatus(serviceId: string | null) {
     queryKey: queueKeys.queueStatus(serviceId ?? ""),
     queryFn: () => api.get<QueueStatus>(`/api/tokens/queue/${serviceId}`),
     enabled: isAuthenticated && !!serviceId,
+    refetchInterval: POLLING.tokens,
   });
 }
 
@@ -80,14 +81,17 @@ export function useBookToken() {
   return useMutation({
     mutationFn: (serviceId: string) =>
       api.post<Token>(`/api/tokens/book?service_id=${serviceId}`),
-    onSuccess: () => invalidateQueueData(),
+    onSuccess: (_, serviceId) => invalidateQueueData(serviceId),
   });
 }
 
 export function useCancelToken() {
   return useMutation({
     mutationFn: (tokenId: string) => api.delete(`/api/tokens/${tokenId}`),
-    onSuccess: () => invalidateQueueData(),
+    onSuccess: () => {
+      invalidateQueueData();
+      queryClient.invalidateQueries({ queryKey: ["queue"] });
+    },
   });
 }
 
