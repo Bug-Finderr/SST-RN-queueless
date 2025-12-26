@@ -6,7 +6,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -14,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { FormInput } from "@/components/ui/FormInput";
 import { Loader } from "@/components/ui/Loader";
 import {
   useCallNextToken,
@@ -312,38 +312,29 @@ export default function AdminScreen() {
         onClose={() => setShowCreateModal(false)}
         title="Create Service"
       >
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Service Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="e.g., General Consultation"
-            value={serviceName}
-            onChangeText={setServiceName}
-          />
-        </View>
+        <FormInput
+          label="Service Name"
+          placeholder="e.g., General Consultation"
+          value={serviceName}
+          onChangeText={setServiceName}
+        />
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Description</Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            placeholder="Describe this service"
-            value={serviceDesc}
-            onChangeText={setServiceDesc}
-            multiline
-            numberOfLines={3}
-          />
-        </View>
+        <FormInput
+          label="Description"
+          placeholder="Describe this service"
+          value={serviceDesc}
+          onChangeText={setServiceDesc}
+          multiline
+          numberOfLines={3}
+        />
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Average Service Time (minutes)</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="5"
-            value={avgTime}
-            onChangeText={setAvgTime}
-            keyboardType="number-pad"
-          />
-        </View>
+        <FormInput
+          label="Average Service Time (minutes)"
+          placeholder="5"
+          value={avgTime}
+          onChangeText={setAvgTime}
+          keyboardType="number-pad"
+        />
 
         <Button
           label="Create Service"
@@ -499,28 +490,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.textMuted,
     marginTop: 12,
-  },
-  inputGroup: {
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: colors.textLabel,
-    marginBottom: 8,
-  },
-  input: {
-    backgroundColor: colors.background,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: colors.border,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
-    color: colors.text,
-  },
-  textArea: {
-    height: 80,
-    textAlignVertical: "top",
   },
 });
