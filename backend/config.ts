@@ -15,3 +15,9 @@ export const config = {
   notifyWhenPositionNear: Number(process.env.NOTIFY_POSITION) || 3,
   isDev: process.env.NODE_ENV !== "production",
 } as const;
+
+export const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+} as const;

@@ -1,4 +1,4 @@
-import { config } from "./config";
+import { config, corsHeaders } from "./config";
 import { connectDB } from "./db";
 import { router } from "./router";
 
@@ -8,15 +8,10 @@ const server = Bun.serve({
   port: config.port,
   async fetch(request: Request): Promise<Response> {
     const start = Date.now();
-    const cors = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    };
 
     // CORS preflight
     if (request.method === "OPTIONS") {
-      return new Response(null, { status: 204, headers: cors });
+      return new Response(null, { status: 204, headers: corsHeaders });
     }
 
     let response: Response;
@@ -40,7 +35,7 @@ const server = Bun.serve({
 
     // Add CORS headers
     const headers = new Headers(response.headers);
-    for (const [k, v] of Object.entries(cors)) headers.set(k, v);
+    for (const [k, v] of Object.entries(corsHeaders)) headers.set(k, v);
 
     if (config.isDev) {
       console.log(

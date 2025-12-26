@@ -1,7 +1,7 @@
 // Express version of the server - demonstrates migration path
 import express from "express";
 
-import { config } from "./config";
+import { config, corsHeaders } from "./config";
 import { connectDB } from "./db";
 import { routes } from "./router";
 
@@ -10,10 +10,7 @@ app.use(express.json());
 
 // CORS middleware
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
+  for (const [k, v] of Object.entries(corsHeaders)) res.header(k, v);
   if (req.method === "OPTIONS") return res.sendStatus(204);
   next();
 });
